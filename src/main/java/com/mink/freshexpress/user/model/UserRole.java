@@ -12,6 +12,12 @@ public class UserRole extends BaseEntity {
     @Column(nullable = false)
     private Long id;
 
-    
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Role role;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private User user;
 
 }
