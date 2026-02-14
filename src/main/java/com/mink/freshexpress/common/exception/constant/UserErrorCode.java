@@ -9,8 +9,9 @@ import org.springframework.http.HttpStatus;
 public enum UserErrorCode implements ErrorCode {
 
     //중복 요청
-    EXIST_USER(HttpStatus.CONFLICT, "중복된 EMAIL을 가진 계정이 있습니다."),
-    INVALID_ROLE_NAME(HttpStatus.BAD_REQUEST,"잘못된 권한 이름입니다" );
+    EXIST_USER(HttpStatus.CONFLICT, "중복된 EMAIL을 가진 계정이 있습니다.")
+    , INVALID_ROLE_NAME(HttpStatus.BAD_REQUEST,"잘못된 권한 이름입니다" )
+    , NOT_FOUND(HttpStatus.NOT_FOUND,"사용자를 찾을 수 없습니다" );
 
 
 
