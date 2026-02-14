@@ -2,7 +2,6 @@ package com.mink.freshexpress.common.exception;
 
 import com.mink.freshexpress.common.ApiResponse;
 import com.mink.freshexpress.common.exception.constant.CommonErrorCode;
-import com.mink.freshexpress.common.exception.constant.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

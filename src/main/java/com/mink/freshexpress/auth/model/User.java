@@ -1,6 +1,6 @@
-package com.mink.freshexpress.user.model;
+package com.mink.freshexpress.auth.model;
 
-import com.mink.freshexpress.common.constant.Role;
+import com.mink.freshexpress.auth.constant.Role;
 import com.mink.freshexpress.common.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

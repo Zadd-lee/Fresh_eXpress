@@ -1,4 +1,4 @@
-package com.mink.freshexpress.common.constant;
+package com.mink.freshexpress.auth.constant;
 
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.UserErrorCode;
