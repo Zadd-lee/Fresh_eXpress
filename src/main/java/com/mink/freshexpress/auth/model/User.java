@@ -8,7 +8,9 @@ import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
-
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
