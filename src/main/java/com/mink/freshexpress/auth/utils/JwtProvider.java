@@ -179,5 +179,19 @@ public class JwtProvider {
             return e.getClaims();
         }
     }
+
+    public String resolveAccessToken(HttpServletRequest request) {
+
+        final String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String headerPrefix = AuthenticationScheme.generateType(AuthenticationScheme.BEARER);
+
+        boolean tokenFound =
+                StringUtils.hasText(bearerToken) && bearerToken.startsWith(headerPrefix);
+        if (tokenFound) {
+            return bearerToken.substring(headerPrefix.length());
+        }else {
+            throw new CustomException(CommonErrorCode.UNAUTHORIZED);
+        }
+    }
 }
 
