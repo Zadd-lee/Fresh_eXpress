@@ -26,7 +26,7 @@ public class User extends BaseEntity {
     private String name;
     private String phone;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @ColumnDefault("true")
     private boolean enabled;
 
