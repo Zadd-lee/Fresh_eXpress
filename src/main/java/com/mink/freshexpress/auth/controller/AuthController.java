@@ -3,7 +3,7 @@ package com.mink.freshexpress.auth.controller;
 import com.mink.freshexpress.auth.dto.JwtAuthResponseDto;
 import com.mink.freshexpress.auth.dto.LoginRequestDto;
 import com.mink.freshexpress.auth.dto.TokenRequestDto;
-import com.mink.freshexpress.auth.service.UserService;
+import com.mink.freshexpress.auth.service.AuthService;
 import com.mink.freshexpress.auth.utils.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
-    private final UserService userService;
+    private final AuthService userService;
     private final JwtProvider jwtProvider;
 
     @PostMapping("/signin")
