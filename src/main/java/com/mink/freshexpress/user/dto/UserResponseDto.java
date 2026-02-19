@@ -1,6 +1,5 @@
-package com.mink.freshexpress.user.controller;
+package com.mink.freshexpress.user.dto;
 
-import com.mink.freshexpress.auth.constant.Role;
 import com.mink.freshexpress.user.model.User;
 import lombok.Value;
 

@@ -2,7 +2,7 @@ package com.mink.freshexpress.user.service.imp;
 
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.UserErrorCode;
-import com.mink.freshexpress.user.controller.UserResponseDto;
+import com.mink.freshexpress.user.dto.UserResponseDto;
 import com.mink.freshexpress.user.model.User;
 import com.mink.freshexpress.user.repository.UserRepository;
 import com.mink.freshexpress.user.service.UserService;

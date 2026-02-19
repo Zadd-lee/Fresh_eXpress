@@ -1,5 +1,6 @@
 package com.mink.freshexpress.user.controller;
 
+import com.mink.freshexpress.user.dto.UserResponseDto;
 import com.mink.freshexpress.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
