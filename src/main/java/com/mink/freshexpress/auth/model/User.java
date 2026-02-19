@@ -39,4 +39,9 @@ public class User extends BaseEntity {
         this.password = newPassword;
 
     }
+
+    public void delete() {
+        this.enabled = false;
+
+    }
 }
