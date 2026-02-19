@@ -2,6 +2,8 @@ package com.mink.freshexpress.auth.utils;
 
 import com.mink.freshexpress.auth.dto.AuthenticationScheme;
 import com.mink.freshexpress.auth.dto.JwtAuthResponseDto;
+import com.mink.freshexpress.common.exception.CustomException;
+import com.mink.freshexpress.common.exception.constant.CommonErrorCode;
 import com.mink.freshexpress.common.model.RedisDao;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -72,11 +74,6 @@ public class JwtProvider {
         Date refreshTokenExpire = new Date(now + refreshTokenExp);
         String refreshToken = generateRefreshToken(username, refreshTokenExpire);
 
-        // Redis에 RefreshToken 넣기
-        // "REFRESH_TOKEN_EXPIRE_TIME"만큼 시간이 지나면 삭제됨
-        redisDao.setValues(username, refreshToken, Duration.ofMillis(refreshTokenExp));
-
-
         return JwtAuthResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -108,8 +105,7 @@ public class JwtProvider {
         Claims claims = parseClaims(accessToken);
 
         if (claims.get("auth") == null) {
-            //todo exception 처리
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new CustomException(CommonErrorCode.AUTHENTICATE_ERROR);
         }
 
         // 클레임에서 권한 정보 가져오기
@@ -182,15 +178,6 @@ public class JwtProvider {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
-    }
-    // RefreshToken 삭제
-    public void deleteRefreshToken(String username) {
-        if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
-        }
-
-        // 로그아웃 시 Redis에서 RefreshToken 삭제
-        redisDao.deleteValues(username);
     }
 }
 
