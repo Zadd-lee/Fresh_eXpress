@@ -16,16 +16,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     public UserResponseDto findById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_FOUND));
+        User user = userRepository.findByIdOrElseThrows(id);
         return new UserResponseDto(user);
     }
 
     @Transactional
     @Override
     public void deleteById(Long id, String email) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_FOUND));
+        User user = userRepository.findByIdOrElseThrows(id);
 
         if (!user.getEmail().equals(email)) {
             throw new CustomException(UserErrorCode.FOBBIDEN);
