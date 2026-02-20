@@ -45,6 +45,11 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
