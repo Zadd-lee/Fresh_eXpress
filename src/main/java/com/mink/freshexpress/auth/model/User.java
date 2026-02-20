@@ -5,6 +5,7 @@ import com.mink.freshexpress.common.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.jspecify.annotations.Nullable;
 
 @Entity
 @Getter
@@ -34,4 +35,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+
+    }
 }
