@@ -1,5 +1,6 @@
 package com.mink.freshexpress.common.exception;
 
+import com.mink.freshexpress.common.exception.constant.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

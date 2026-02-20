@@ -1,6 +1,7 @@
 package com.mink.freshexpress.common.exception;
 
 import com.mink.freshexpress.common.ApiResponse;
+import com.mink.freshexpress.common.exception.constant.CommonErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,6 +22,6 @@ public class GlobalExceptionHandler {
     public ApiResponse<?> handleException(Exception e) {
         log.error("handleException() in GlobalExceptionHandler throw Exception : {}", e.getMessage());
         e.printStackTrace();
-        return ApiResponse.fail(new CustomException(ErrorCode.INTERNAL_SERVER_ERROR));
+        return ApiResponse.fail(new CustomException(CommonErrorCode.INTERNAL_SERVER_ERROR));
     }
 }
