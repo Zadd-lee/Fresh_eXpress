@@ -25,4 +25,12 @@ public class UserController {
         service.deleteById(id, authenticatedPrincipal.getUsername());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable(name = "id") Long id
+            , @AuthenticationPrincipal UserDetails authenticatedPrincipal
+            , @RequestBody UpdateUserRequestDto dto) {
+        service.update(id, authenticatedPrincipal.getUsername(), dto);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 }
