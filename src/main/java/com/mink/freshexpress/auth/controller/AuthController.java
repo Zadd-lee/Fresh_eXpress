@@ -2,6 +2,7 @@ package com.mink.freshexpress.auth.controller;
 
 import com.mink.freshexpress.auth.dto.JwtAuthResponseDto;
 import com.mink.freshexpress.auth.dto.LoginRequestDto;
+import com.mink.freshexpress.auth.dto.TokenRequestDto;
 import com.mink.freshexpress.auth.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponseDto> login(@Valid @RequestBody LoginRequestDto dto) {
         return new ResponseEntity<>(userService.login(dto), HttpStatus.OK);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtAuthResponseDto> refresh(@RequestBody TokenRequestDto tokenRequestDto) {
+        return new ResponseEntity<>(userService.refreshToken(tokenRequestDto), HttpStatus.OK);
     }
 }
