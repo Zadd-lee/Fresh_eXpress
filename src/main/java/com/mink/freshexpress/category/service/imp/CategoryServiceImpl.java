@@ -24,10 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void create(CreateCategoryRequestDto dto) {
         //validate
-        if (repository.existsByName(dto.getName())) {
-            throw new CustomException(CategoryErrorCode.MULTIPLE_CATEGORY);
-        }
-
+        validateNewCategory(dto.getName());
 
         Category category = dto.toEntity();
 
@@ -41,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
             //상위 카테고리 validate
             if (parentCategoryList.size() > 1) {
                 throw new CustomException(CategoryErrorCode.MULTIPLE_PARENT_CATEGORY);
-            } else if (parentCategoryList.isEmpty()) {
+            } else if (parentCategoryList.isEmpty() || !parentCategoryList.get(0).isEnable()) {
                 throw new CustomException(CategoryErrorCode.PARENT_CATEGORY_NOT_FOUND);
             }
 
@@ -55,6 +52,18 @@ public class CategoryServiceImpl implements CategoryService {
         }
         repository.save(category);
 
+    }
+
+    private void validateNewCategory(String name) {
+        List<Category> categoryList = repository.findByName(name);
+        if (!categoryList.isEmpty()) {
+            for (Category category : categoryList) {
+                if (!category.isEnable()) {
+                    throw new CustomException(CategoryErrorCode.ALREADY_DELETED);
+                }
+            }
+            throw new CustomException(CategoryErrorCode.MULTIPLE_CATEGORY);
+        }
     }
 
     @Override

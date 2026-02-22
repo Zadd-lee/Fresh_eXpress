@@ -16,6 +16,7 @@ public class CreateCategoryRequestDto {
     public Category toEntity() {
         return Category.builder()
                 .name(this.name)
+                .enable(true)
                 .build();
     }
 }
