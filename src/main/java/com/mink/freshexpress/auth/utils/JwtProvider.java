@@ -2,14 +2,15 @@ package com.mink.freshexpress.auth.utils;
 
 import com.mink.freshexpress.auth.dto.AuthenticationScheme;
 import com.mink.freshexpress.auth.dto.JwtAuthResponseDto;
+import com.mink.freshexpress.auth.repository.RefreshTokenRepository;
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.CommonErrorCode;
-import com.mink.freshexpress.common.model.RedisDao;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,21 +35,20 @@ public class JwtProvider {
     private final Key key;
     private final long accessTokenExp;
     private final long refreshTokenExp;
-    private final RedisDao redisDao;
+    private final RefreshTokenRepository repository;
 
     //todo refact 필요
     private static final long THREE_DAYS = 1000 * 60 * 60 * 24 * 3;  // 3일
 
-
     public JwtProvider(@Value("${jwt.secret}") final String key
     , @Value("${jwt.access-token-expiration}") Long accessTokenExp
     , @Value("${jwt.refresh-token-expiration}") Long refreshTokenExp
-            , RedisDao redisDao) {
-        this.redisDao = redisDao;
+           , RefreshTokenRepository repository) {
         byte[] keyBytes = Decoders.BASE64URL.decode(key);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.refreshTokenExp = refreshTokenExp;
         this.accessTokenExp = accessTokenExp;
+        this.repository = repository;
     }
 
     // Member 정보를 가지고 AccessToken, RefreshToken을 생성하기
@@ -144,7 +144,8 @@ public class JwtProvider {
             // token에서 username 추출하기
             String username = getUserNameFromToken(token);
             // Redis에 저장된 RefreshToken과 비교하기
-            String redisToken = (String) redisDao.getValues(username);
+
+            String redisToken = repository.findByKey(username);
             return token.equals(redisToken);
         } catch (Exception e) {
             log.info("RefreshToken Validation Failed", e);
