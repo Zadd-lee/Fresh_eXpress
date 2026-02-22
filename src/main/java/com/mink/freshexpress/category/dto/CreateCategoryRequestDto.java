@@ -11,11 +11,14 @@ public class CreateCategoryRequestDto {
     @NotBlank
      String name;
 
+    boolean isEnable;
+
      String parentCategoryName;
 
     public Category toEntity() {
         return Category.builder()
                 .name(this.name)
+                .enable(this.isEnable)
                 .build();
     }
 }

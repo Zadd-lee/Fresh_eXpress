@@ -96,6 +96,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         return categoryList.stream()
+                .filter(Category::isEnable)
                 .map(SimpleCategoryResponseDto::new)
                 .toList();
     }
