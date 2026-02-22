@@ -47,4 +47,8 @@ public class Category extends BaseEntity {
     public void addParent(Category parent) {
         this.parent = parent;
     }
+
+    public void delete() {
+        this.enable = false;
+    }
 }
