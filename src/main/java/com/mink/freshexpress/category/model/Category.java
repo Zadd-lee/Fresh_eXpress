@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,10 @@ public class Category extends BaseEntity {
 
     @Column(name = "depth")
     private Long depth;
+
+    @Column(nullable = false)
+    @ColumnDefault("true")
+    private boolean enable;
 
     @OneToMany(mappedBy = "parent")
     List<Category> children = new ArrayList<>();
