@@ -12,8 +12,8 @@ public enum CommonErrorCode implements ErrorCode {
     INVALID_PARAMETER(HttpStatus.NOT_FOUND, "파라미터 값을 확인해주세요."),
     //500 INTERNAL SERVER ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러입니다"),
-    AUTHENTICATE_ERROR(HttpStatus.FORBIDDEN,"권한 정보가 없습니다" )
-    , UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"인증되지 않은 사용자입니다." );
+    AUTHENTICATE_ERROR(HttpStatus.UNAUTHORIZED,"권한 정보가 없습니다" )
+    , FORBIDDEN(HttpStatus.FORBIDDEN,"인증되지 않은 사용자입니다." );
 
 
     private final HttpStatus httpStatus;

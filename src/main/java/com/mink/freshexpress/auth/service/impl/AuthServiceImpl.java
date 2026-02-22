@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
     public JwtAuthResponseDto refreshToken(TokenRequestDto tokenRequestDto) {
         //1. refresh Token 검증
         if (!jwtProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-            throw new CustomException(CommonErrorCode.UNAUTHORIZED);
+            throw new CustomException(CommonErrorCode.FORBIDDEN);
         }
         
         //2. Access Token 에서 member id 가져오기
@@ -101,7 +101,7 @@ public class AuthServiceImpl implements AuthService {
     public void logout(String accessToken) {
         // 1. Access Token 검증
         if (!jwtProvider.validateToken(accessToken)) {
-            throw new CustomException(CommonErrorCode.UNAUTHORIZED);
+            throw new CustomException(CommonErrorCode.FORBIDDEN);
         }
 
         // 2. Access Token 에서 Member ID 가져오기

@@ -2,6 +2,7 @@ package com.mink.freshexpress.auth.model;
 
 import com.mink.freshexpress.auth.constant.Role;
 import com.mink.freshexpress.common.model.BaseEntity;
+import com.mink.freshexpress.user.controller.UpdateUserRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -44,4 +45,12 @@ public class User extends BaseEntity {
         this.enabled = false;
 
     }
+
+    public void update(UpdateUserRequestDto dto) {
+        this.role = Role.of(dto.getRole());
+        this.phone = dto.getPhone();
+        this.name = dto.getName();
+
+    }
+
 }
