@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -69,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public JwtAuthResponseDto refreshToken(TokenRequestDto tokenRequestDto) {
-        //1. refresh Token 검증 redis에서 검증
+        //1. refresh Token 검증
         if (!jwtProvider.validateToken(tokenRequestDto.getRefreshToken())) {
             throw new CustomException(CommonErrorCode.UNAUTHORIZED);
         }
@@ -98,6 +99,27 @@ public class UserServiceImpl implements UserService {
         return jwtAuthResponseDto;
     }
 
+    @Override
+    public void logout(String accessToken) {
+        // 1. Access Token 검증
+        if (!jwtProvider.validateToken(accessToken)) {
+            throw new CustomException(CommonErrorCode.UNAUTHORIZED);
+        }
+
+        // 2. Access Token 에서 Member ID 가져오기
+        Authentication authentication = jwtProvider.getAuthentication(accessToken);
+
+        // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
+        RefreshToken refreshToken = refreshTokenRepository.findById(authentication.getName())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_FOUND));
+
+        // 4. Refresh Token 삭제
+        refreshTokenRepository.delete(refreshToken);
+
+        // 5. SecurityContext 에서 인증 정보 삭제
+        SecurityContextHolder.clearContext();
+
+    }
 
 
 }

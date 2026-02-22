@@ -12,4 +12,6 @@ public interface UserService {
     JwtAuthResponseDto login(@Valid LoginRequestDto dto);
 
     JwtAuthResponseDto refreshToken(TokenRequestDto tokenRequestDto);
+
+    void logout(String accessToken);
 }
