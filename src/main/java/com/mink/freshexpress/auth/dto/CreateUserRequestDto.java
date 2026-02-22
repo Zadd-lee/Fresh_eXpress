@@ -1,7 +1,7 @@
 package com.mink.freshexpress.auth.dto;
 
 import com.mink.freshexpress.auth.constant.Role;
-import com.mink.freshexpress.auth.model.User;
+import com.mink.freshexpress.user.model.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import lombok.Value;
 import java.io.Serializable;
 
 /**
- * DTO for {@link com.mink.freshexpress.auth.model.User}
+ * DTO for {@link User}
  */
 @Value
 public class CreateUserRequestDto implements Serializable {

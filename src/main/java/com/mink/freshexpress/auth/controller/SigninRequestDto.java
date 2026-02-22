@@ -1,7 +1,7 @@
 package com.mink.freshexpress.auth.controller;
 
 import com.mink.freshexpress.auth.constant.Role;
-import com.mink.freshexpress.auth.model.User;
+import com.mink.freshexpress.user.model.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,7 +1,7 @@
 package com.mink.freshexpress.auth.config;
 
-import com.mink.freshexpress.auth.model.User;
-import com.mink.freshexpress.auth.repository.UserRepository;
+import com.mink.freshexpress.user.model.User;
+import com.mink.freshexpress.user.repository.UserRepository;
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.UserErrorCode;
 import lombok.RequiredArgsConstructor;

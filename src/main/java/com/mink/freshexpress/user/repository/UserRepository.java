@@ -1,10 +1,9 @@
-package com.mink.freshexpress.auth.repository;
+package com.mink.freshexpress.user.repository;
 
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.UserErrorCode;
 import com.mink.freshexpress.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 

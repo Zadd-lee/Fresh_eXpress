@@ -1,4 +1,4 @@
-package com.mink.freshexpress.auth.model;
+package com.mink.freshexpress.user.model;
 
 import com.mink.freshexpress.auth.constant.Role;
 import com.mink.freshexpress.common.model.BaseEntity;
@@ -6,7 +6,6 @@ import com.mink.freshexpress.user.controller.UpdateUserRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.jspecify.annotations.Nullable;
 
 @Entity
 @Getter
