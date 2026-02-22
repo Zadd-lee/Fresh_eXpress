@@ -90,4 +90,13 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(SimpleCategoryResponseDto::new)
                 .toList();
     }
+
+    @Transactional
+    @Override
+    public void delete(Long id) {
+        Category category = repository.findById(id)
+                .orElseThrow(() -> new CustomException(CategoryErrorCode.NOT_FOUND));
+        category.delete();
+
+    }
 }
