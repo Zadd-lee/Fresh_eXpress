@@ -1,6 +1,8 @@
 package com.mink.freshexpress.category.service.imp;
 
+import com.mink.freshexpress.category.dto.CategoryResponseDto;
 import com.mink.freshexpress.category.dto.CreateCategoryRequestDto;
+import com.mink.freshexpress.category.dto.SimpleCategoryResponseDto;
 import com.mink.freshexpress.category.model.Category;
 import com.mink.freshexpress.category.repository.CategoryRepository;
 import com.mink.freshexpress.category.service.CategoryService;
@@ -10,12 +12,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository repository;
+
     @Transactional
     @Override
     public void create(CreateCategoryRequestDto dto) {
@@ -29,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         //상위 카테고리가 있을 경우
         String parentCategoryName = dto.getParentCategoryName();
-        if (parentCategoryName==null || parentCategoryName.isBlank()) {//최상위 카테고리일 경우
+        if (parentCategoryName == null || parentCategoryName.isBlank()) {//최상위 카테고리일 경우
             category.updateDepth(0L);
         } else {//상위 카테고리가 있는 경우
             List<Category> parentCategoryList = repository.findByNameLikeIgnoreCase(parentCategoryName);
@@ -51,5 +55,26 @@ public class CategoryServiceImpl implements CategoryService {
         }
         repository.save(category);
 
+    }
+
+    @Override
+    public CategoryResponseDto find(Long id) {
+        Category category = repository.findById(id)
+                .orElseThrow(() -> new CustomException(CategoryErrorCode.NOT_FOUND));
+
+        CategoryResponseDto dto = new CategoryResponseDto(category.getName());
+
+        //부모 카테고리 조회
+        for (int depth = 0; depth < category.getDepth(); depth++) {
+            Category parent = category.getParent();
+            dto.addParent(new SimpleCategoryResponseDto(parent));
+        }
+
+        //자식 카테고리 조회
+        category.getChildren().stream()
+                .map(SimpleCategoryResponseDto::new)
+                .forEach(dto::addChild);
+
+        return dto;
     }
 }
