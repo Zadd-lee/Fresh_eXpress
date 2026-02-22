@@ -6,7 +6,7 @@ import com.mink.freshexpress.auth.dto.LoginRequestDto;
 import com.mink.freshexpress.auth.dto.TokenRequestDto;
 import jakarta.validation.Valid;
 
-public interface UserService {
+public interface AuthService {
     void signIn(@Valid SigninRequestDto dto);
 
     JwtAuthResponseDto login(@Valid LoginRequestDto dto);

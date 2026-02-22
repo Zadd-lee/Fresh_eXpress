@@ -8,16 +8,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -39,7 +34,7 @@ public class WebConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth->
+                .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers(UrlConst.WHITE_LIST).permitAll()
                                 // static 리소스 경로
@@ -47,6 +42,8 @@ public class WebConfig {
                                 // 일부 dispatch 타입
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE,
                                         DispatcherType.ERROR).permitAll()
+                                .requestMatchers(UrlConst.ADMIN_URL).hasRole("ADMIN")
+                                .requestMatchers(UrlConst.COSTOMER_URL).hasRole("CUSTOMER")
                                 .anyRequest().authenticated()
                 )
                 // Spring Security 예외에 대한 처리를 핸들러에 위임.
@@ -62,5 +59,15 @@ public class WebConfig {
         return http.build();
     }
 
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.fromHierarchy(
+                """
+                        ROLE_ADMIN > ROLE_WAREHOUSE_MANAGER
+                        ROLE_ADMIN > ROLE_PACKAGE_MANAGER
+                        ROLE_ADMIN > ROLE_DRIVER
+                        ROLE_ADMIN > ROLE_CUSTOMER
+                        """);
+    }
 
 }
