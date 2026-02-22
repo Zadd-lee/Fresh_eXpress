@@ -1,6 +1,6 @@
 package com.mink.freshexpress.auth.config;
 
-import com.mink.freshexpress.auth.model.User;
+import com.mink.freshexpress.user.model.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
