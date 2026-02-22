@@ -33,12 +33,12 @@ public class Category extends BaseEntity {
     @OneToMany(mappedBy = "parent")
     List<Category> children = new ArrayList<>();
 
-    public void addChildren(Category category) {
-        children.add(category);
-
-    }
 
     public void updateDepth(Long depth) {
         this.depth = depth;
+    }
+
+    public void addParent(Category parent) {
+        this.parent = parent;
     }
 }
