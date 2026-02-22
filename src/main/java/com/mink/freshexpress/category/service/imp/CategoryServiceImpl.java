@@ -2,6 +2,7 @@ package com.mink.freshexpress.category.service.imp;
 
 import com.mink.freshexpress.category.dto.CategoryResponseDto;
 import com.mink.freshexpress.category.dto.CreateCategoryRequestDto;
+import com.mink.freshexpress.category.dto.SearchCategoryRequestDto;
 import com.mink.freshexpress.category.dto.SimpleCategoryResponseDto;
 import com.mink.freshexpress.category.model.Category;
 import com.mink.freshexpress.category.repository.CategoryRepository;
@@ -12,7 +13,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (parentCategoryName == null || parentCategoryName.isBlank()) {//최상위 카테고리일 경우
             category.updateDepth(0L);
         } else {//상위 카테고리가 있는 경우
-            List<Category> parentCategoryList = repository.findByNameLikeIgnoreCase(parentCategoryName);
+            List<Category> parentCategoryList = repository.findByNameContains(parentCategoryName);
 
             //상위 카테고리 validate
             if (parentCategoryList.size() > 1) {
@@ -76,5 +76,18 @@ public class CategoryServiceImpl implements CategoryService {
                 .forEach(dto::addChild);
 
         return dto;
+    }
+
+    @Override
+    public List<SimpleCategoryResponseDto> search(SearchCategoryRequestDto dto) {
+        List<Category> categoryList = repository.findByNameContains(dto.getName());
+        //valid
+        if (categoryList.isEmpty()) {
+            throw new CustomException(CategoryErrorCode.NOT_FOUND);
+        }
+
+        return categoryList.stream()
+                .map(SimpleCategoryResponseDto::new)
+                .toList();
     }
 }
