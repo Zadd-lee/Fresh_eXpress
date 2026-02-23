@@ -94,8 +94,18 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryList.isEmpty()) {
             throw new CustomException(CategoryErrorCode.NOT_FOUND);
         }
+        String isEnable = dto.getIsEnable();
 
         return categoryList.stream()
+                .filter(category -> {
+                    if ("Y".equals(isEnable)) {
+                        return !category.isEnable();
+                    }
+                    if ("N".equals(isEnable)) {
+                        return category.isEnable();
+                    }
+                    return true;
+                })
                 .map(SimpleCategoryResponseDto::new)
                 .toList();
     }

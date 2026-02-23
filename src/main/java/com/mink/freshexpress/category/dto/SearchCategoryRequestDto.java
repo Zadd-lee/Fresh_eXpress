@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 public class SearchCategoryRequestDto {
     @NotBlank
     private String name;
+
+    private String isEnable;
 }
