@@ -51,4 +51,8 @@ public class Category extends BaseEntity {
     public void delete() {
         this.enable = false;
     }
+
+    public void restore() {
+        this.enable = true;
+    }
 }
