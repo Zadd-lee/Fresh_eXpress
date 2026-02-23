@@ -15,4 +15,6 @@ public interface CategoryService {
     CategoryResponseDto find(Long id);
 
     List<SimpleCategoryResponseDto> search(SearchCategoryRequestDto dto);
+
+    void delete(Long id);
 }
