@@ -1,9 +1,6 @@
 package com.mink.freshexpress.category.service;
 
-import com.mink.freshexpress.category.dto.CategoryResponseDto;
-import com.mink.freshexpress.category.dto.CreateCategoryRequestDto;
-import com.mink.freshexpress.category.dto.SearchCategoryRequestDto;
-import com.mink.freshexpress.category.dto.SimpleCategoryResponseDto;
+import com.mink.freshexpress.category.dto.*;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -17,4 +14,6 @@ public interface CategoryService {
     List<SimpleCategoryResponseDto> search(SearchCategoryRequestDto dto);
 
     void delete(Long id);
+
+    void update(Long id, UpdateCategoryRequestDto dto);
 }

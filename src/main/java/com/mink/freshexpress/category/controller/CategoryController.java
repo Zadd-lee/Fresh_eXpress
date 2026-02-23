@@ -1,9 +1,6 @@
 package com.mink.freshexpress.category.controller;
 
-import com.mink.freshexpress.category.dto.CategoryResponseDto;
-import com.mink.freshexpress.category.dto.CreateCategoryRequestDto;
-import com.mink.freshexpress.category.dto.SearchCategoryRequestDto;
-import com.mink.freshexpress.category.dto.SimpleCategoryResponseDto;
+import com.mink.freshexpress.category.dto.*;
 import com.mink.freshexpress.category.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +34,12 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody UpdateCategoryRequestDto dto) {
+        service.update(id,dto);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

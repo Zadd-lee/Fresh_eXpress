@@ -1,9 +1,6 @@
 package com.mink.freshexpress.category.service.imp;
 
-import com.mink.freshexpress.category.dto.CategoryResponseDto;
-import com.mink.freshexpress.category.dto.CreateCategoryRequestDto;
-import com.mink.freshexpress.category.dto.SearchCategoryRequestDto;
-import com.mink.freshexpress.category.dto.SimpleCategoryResponseDto;
+import com.mink.freshexpress.category.dto.*;
 import com.mink.freshexpress.category.model.Category;
 import com.mink.freshexpress.category.repository.CategoryRepository;
 import com.mink.freshexpress.category.service.CategoryService;
@@ -117,5 +114,26 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new CustomException(CategoryErrorCode.NOT_FOUND));
         category.delete();
 
+    }
+
+    @Transactional
+    @Override
+    public void update(Long id, UpdateCategoryRequestDto dto) {
+        Category category = repository.findById(id)
+                .orElseThrow(() -> new CustomException(CategoryErrorCode.NOT_FOUND));//valid
+        if (dto.getNewParentId() != null) {
+            Category parentCategory = repository.findById(Long.valueOf(dto.getNewParentId()))
+                    .orElseThrow(() -> new CustomException(CategoryErrorCode.PARENT_CATEGORY_NOT_FOUND));//부모 카테고리 valid
+
+            if (category.getDepth() == 0) {
+                category.addParent(parentCategory);
+            } else if (!category.getParent().equals(parentCategory)) {
+                category.addParent(parentCategory);
+            }
+
+            //category depth 수정
+            category.updateDepth(parentCategory.getDepth()+1);
+
+        }
     }
 }
