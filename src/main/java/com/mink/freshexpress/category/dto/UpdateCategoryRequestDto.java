@@ -1,6 +1,5 @@
 package com.mink.freshexpress.category.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateCategoryRequestDto {
     private String newParentId;
+    private Boolean isRestore;
 }

@@ -132,8 +132,11 @@ public class CategoryServiceImpl implements CategoryService {
             }
 
             //category depth 수정
-            category.updateDepth(parentCategory.getDepth()+1);
+            category.updateDepth(parentCategory.getDepth() + 1);
+        }
 
+        if (dto.getIsRestore() != null && !category.isEnable()) {
+            category.restore();
         }
     }
 }
