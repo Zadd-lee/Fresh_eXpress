@@ -2,6 +2,7 @@ package com.mink.freshexpress.product.service.imp;
 
 import com.mink.freshexpress.category.model.Category;
 import com.mink.freshexpress.category.repository.CategoryRepository;
+import com.mink.freshexpress.common.exception.constant.CategoryErrorCode;
 import com.mink.freshexpress.common.util.Validator;
 import com.mink.freshexpress.product.dto.CreateProductRequestDto;
 import com.mink.freshexpress.product.model.Product;
@@ -29,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = dto.toEntity();
 
         //category
-        Category category = valid(categoryRepository.findById(Long.valueOf(dto.getCategoryId())));
+        Category category = valid(categoryRepository.findById(Long.valueOf(dto.getCategoryId())), CategoryErrorCode.NOT_FOUND);
         product.addCategory(category);
 
         productRepository.save(product);
@@ -41,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
         dtoList.stream()
                 .map(dto->{
                     Product product = dto.toEntity();
-                    Category category = valid(categoryRepository.findById(Long.valueOf(dto.getCategoryId())));
+                    Category category = valid(categoryRepository.findById(Long.valueOf(dto.getCategoryId())),CategoryErrorCode.NOT_FOUND);
                     product.addCategory(category);
                     return product;
                 })
