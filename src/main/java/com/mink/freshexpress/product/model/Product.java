@@ -1,5 +1,6 @@
 package com.mink.freshexpress.product.model;
 
+import com.mink.freshexpress.category.model.Category;
 import com.mink.freshexpress.common.model.BaseEntity;
 import com.mink.freshexpress.product.constant.Unit;
 import com.mink.freshexpress.product.constant.StorageTemp;
@@ -41,5 +42,6 @@ public class Product extends BaseEntity {
     private boolean isActive;
 
     @ManyToOne
-    private Category
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
