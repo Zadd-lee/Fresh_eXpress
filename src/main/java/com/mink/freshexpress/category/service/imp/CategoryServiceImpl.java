@@ -6,7 +6,6 @@ import com.mink.freshexpress.category.repository.CategoryRepository;
 import com.mink.freshexpress.category.service.CategoryService;
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.CategoryErrorCode;
-import com.mink.freshexpress.common.util.Validator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -68,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponseDto find(Long id) {
-        Category category = valid(repository.findById(id));
+        Category category = valid(repository.findById(id),CategoryErrorCode.NOT_FOUND);
 
         CategoryResponseDto dto = new CategoryResponseDto(category.getName());
 
@@ -112,7 +111,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public void delete(Long id) {
-        Category category = valid(repository.findById(id));
+        Category category = valid(repository.findById(id),CategoryErrorCode.NOT_FOUND);
         category.delete();
 
     }
@@ -120,10 +119,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public void update(Long id, UpdateCategoryRequestDto dto) {
-        Category category = valid(repository.findById(id));
+        Category category = valid(repository.findById(id),CategoryErrorCode.NOT_FOUND);
 
         if (dto.getNewParentId() != null) {
-            Category parentCategory = validParents(repository.findById(Long.valueOf(dto.getNewParentId())));
+            Category parentCategory = valid(repository.findById(Long.valueOf(dto.getNewParentId())),CategoryErrorCode.PARENT_CATEGORY_NOT_FOUND);
 
             if (category.getDepth() == 0) {
                 category.addParent(parentCategory);
