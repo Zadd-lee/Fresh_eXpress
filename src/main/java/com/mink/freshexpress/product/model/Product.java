@@ -12,8 +12,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Product extends BaseEntity {
     @Id
@@ -44,4 +44,9 @@ public class Product extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    public void addCategory(Category category) {
+        this.category = category;
+    }
+
 }
