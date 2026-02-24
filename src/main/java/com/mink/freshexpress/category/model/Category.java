@@ -1,6 +1,7 @@
 package com.mink.freshexpress.category.model;
 
 import com.mink.freshexpress.common.model.BaseEntity;
+import com.mink.freshexpress.product.model.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,9 @@ public class Category extends BaseEntity {
 
     @OneToMany(mappedBy = "parent")
     List<Category> children = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category")
+    List<Product> productList = new ArrayList<>();
 
 
     public void updateDepth(Long depth) {
