@@ -31,7 +31,7 @@ public class Category extends BaseEntity {
     private Category parent;
 
     @Column(name = "depth")
-    private Long depth;
+    private Integer depth;
 
     @Column(nullable = false)
     @ColumnDefault("true")
@@ -44,7 +44,7 @@ public class Category extends BaseEntity {
     List<Product> productList = new ArrayList<>();
 
 
-    public void updateDepth(Long depth) {
+    public void updateDepth(int depth) {
         this.depth = depth;
     }
 

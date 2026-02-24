@@ -3,8 +3,10 @@ package com.mink.freshexpress.product.service.imp;
 import com.mink.freshexpress.category.model.Category;
 import com.mink.freshexpress.category.repository.CategoryRepository;
 import com.mink.freshexpress.common.exception.constant.CategoryErrorCode;
+import com.mink.freshexpress.common.exception.constant.ProductErrorCode;
 import com.mink.freshexpress.common.util.Validator;
 import com.mink.freshexpress.product.dto.CreateProductRequestDto;
+import com.mink.freshexpress.product.dto.ProductResponseDto;
 import com.mink.freshexpress.product.model.Product;
 import com.mink.freshexpress.product.repository.ProductRepository;
 import com.mink.freshexpress.product.service.ProductService;
@@ -47,5 +49,11 @@ public class ProductServiceImpl implements ProductService {
                     return product;
                 })
                 .forEach(productRepository::save);
+    }
+
+    @Override
+    public ProductResponseDto find(Long id){
+        Product product = valid(productRepository.findById(id), ProductErrorCode.NOT_FOUND);
+        return new ProductResponseDto(product);
     }
 }

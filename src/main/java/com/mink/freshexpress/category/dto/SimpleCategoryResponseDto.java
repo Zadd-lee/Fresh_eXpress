@@ -7,7 +7,7 @@ import lombok.Getter;
 public class SimpleCategoryResponseDto {
     private final Long id;
     private final String name;
-    private final Long depth;
+    private final int depth;
 
     public SimpleCategoryResponseDto(Category category) {
         this.name = category.getName();

@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
         //상위 카테고리가 있을 경우
         String parentCategoryName = dto.getParentCategoryName();
         if (parentCategoryName == null || parentCategoryName.isBlank()) {//최상위 카테고리일 경우
-            category.updateDepth(0L);
+            category.updateDepth(0);
         } else {//상위 카테고리가 있는 경우
             List<Category> parentCategoryList = repository.findByNameContains(parentCategoryName);
 
