@@ -6,11 +6,14 @@ import com.mink.freshexpress.category.repository.CategoryRepository;
 import com.mink.freshexpress.category.service.CategoryService;
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.CategoryErrorCode;
+import com.mink.freshexpress.common.util.Validator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.mink.freshexpress.common.util.Validator.*;
 
 @Service
 @RequiredArgsConstructor
@@ -65,8 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponseDto find(Long id) {
-        Category category = repository.findById(id)
-                .orElseThrow(() -> new CustomException(CategoryErrorCode.NOT_FOUND));
+        Category category = valid(repository.findById(id));
 
         CategoryResponseDto dto = new CategoryResponseDto(category.getName());
 
@@ -110,8 +112,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public void delete(Long id) {
-        Category category = repository.findById(id)
-                .orElseThrow(() -> new CustomException(CategoryErrorCode.NOT_FOUND));
+        Category category = valid(repository.findById(id));
         category.delete();
 
     }
@@ -119,11 +120,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public void update(Long id, UpdateCategoryRequestDto dto) {
-        Category category = repository.findById(id)
-                .orElseThrow(() -> new CustomException(CategoryErrorCode.NOT_FOUND));//valid
+        Category category = valid(repository.findById(id));
+
         if (dto.getNewParentId() != null) {
-            Category parentCategory = repository.findById(Long.valueOf(dto.getNewParentId()))
-                    .orElseThrow(() -> new CustomException(CategoryErrorCode.PARENT_CATEGORY_NOT_FOUND));//부모 카테고리 valid
+            Category parentCategory = validParents(repository.findById(Long.valueOf(dto.getNewParentId())));
 
             if (category.getDepth() == 0) {
                 category.addParent(parentCategory);
