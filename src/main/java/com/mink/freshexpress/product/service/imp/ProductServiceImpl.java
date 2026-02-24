@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.mink.freshexpress.common.util.Validator.*;
@@ -32,5 +33,18 @@ public class ProductServiceImpl implements ProductService {
         product.addCategory(category);
 
         productRepository.save(product);
+    }
+
+    @Transactional
+    @Override
+    public void createBulk(List<CreateProductRequestDto> dtoList) {
+        dtoList.stream()
+                .map(dto->{
+                    Product product = dto.toEntity();
+                    Category category = valid(categoryRepository.findById(Long.valueOf(dto.getCategoryId())));
+                    product.addCategory(category);
+                    return product;
+                })
+                .forEach(productRepository::save);
     }
 }
