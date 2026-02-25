@@ -1,6 +1,6 @@
 package com.mink.freshexpress.product.dto;
 
-import com.mink.freshexpress.product.constant.StorageTemp;
+import com.mink.freshexpress.product.constant.Temperature;
 import com.mink.freshexpress.product.constant.Unit;
 import com.mink.freshexpress.product.model.Product;
 import jakarta.validation.constraints.NotBlank;
@@ -30,7 +30,7 @@ public class CreateProductRequestDto {
                 .code(this.code)
                 .name(this.name)
                 .unit(Unit.ofBySKUCode(this.code))
-                .storageTemp(StorageTemp.of(this.storageTemp))
+                .storageTemp(Temperature.of(this.storageTemp))
                 .defaultShelfLifeDays(Integer.valueOf(this.defaultShelfLifeDays))
                 .isActive(true)
                 .build();

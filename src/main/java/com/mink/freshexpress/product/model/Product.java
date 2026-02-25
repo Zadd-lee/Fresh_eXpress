@@ -3,7 +3,7 @@ package com.mink.freshexpress.product.model;
 import com.mink.freshexpress.category.model.Category;
 import com.mink.freshexpress.common.model.BaseEntity;
 import com.mink.freshexpress.product.constant.Unit;
-import com.mink.freshexpress.product.constant.StorageTemp;
+import com.mink.freshexpress.product.constant.Temperature;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +29,7 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private StorageTemp storageTemp;
+    private Temperature storageTemp;
 
     @Column(nullable = false)
     private Integer defaultShelfLifeDays;
@@ -58,6 +58,6 @@ public class Product extends BaseEntity {
     }
 
     public void updateStorageTemp(String storageTemp) {
-        this.storageTemp = StorageTemp.of(storageTemp);
+        this.storageTemp = Temperature.of(storageTemp);
     }
 }

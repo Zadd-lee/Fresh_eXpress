@@ -4,10 +4,7 @@ import com.mink.freshexpress.category.dto.SimpleCategoryResponseDto;
 import com.mink.freshexpress.category.model.Category;
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.CommonErrorCode;
-import com.mink.freshexpress.product.constant.StorageTemp;
-import com.mink.freshexpress.product.constant.Unit;
 import com.mink.freshexpress.product.model.Product;
-import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.util.ArrayList;
