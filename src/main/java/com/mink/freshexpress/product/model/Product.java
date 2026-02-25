@@ -9,8 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
 @NoArgsConstructor
@@ -51,4 +49,7 @@ public class Product extends BaseEntity {
         this.category = category;
     }
 
+    public void toggleActive() {
+        this.isActive = !this.isActive;
+    }
 }

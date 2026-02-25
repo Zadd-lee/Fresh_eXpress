@@ -12,4 +12,6 @@ public interface ProductService {
     void createBulk(@Valid List<CreateProductRequestDto> dtoList);
 
     ProductResponseDto find(Long id);
+
+    void delete(Long id);
 }
