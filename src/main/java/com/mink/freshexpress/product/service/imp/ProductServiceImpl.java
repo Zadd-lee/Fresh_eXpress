@@ -6,6 +6,7 @@ import com.mink.freshexpress.common.exception.constant.CategoryErrorCode;
 import com.mink.freshexpress.common.exception.constant.ProductErrorCode;
 import com.mink.freshexpress.product.dto.CreateProductRequestDto;
 import com.mink.freshexpress.product.dto.ProductResponseDto;
+import com.mink.freshexpress.product.dto.UpdateProductRequestDto;
 import com.mink.freshexpress.product.model.Product;
 import com.mink.freshexpress.product.repository.ProductRepository;
 import com.mink.freshexpress.product.service.ProductService;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.mink.freshexpress.common.util.Validator.*;
 
@@ -60,5 +62,15 @@ public class ProductServiceImpl implements ProductService {
         //valid
         Product product = valid(productRepository.findById(id), ProductErrorCode.NOT_FOUND);
         product.toggleActive();
+    }
+
+    @Transactional
+    @Override
+    public void update(Long id, UpdateProductRequestDto dto) {
+        Product product = valid(productRepository.findById(id),ProductErrorCode.NOT_FOUND);
+
+        if(dto.getDefaultShelfLifeDays() != null && !dto.getDefaultShelfLifeDays().isBlank()) product.updateDefaultShelfLifeDays(dto.getDefaultShelfLifeDays());
+        if(dto.getStorageTemp() != null && !dto.getStorageTemp().isBlank()) product.updateStorageTemp(dto.getStorageTemp());
+
     }
 }
