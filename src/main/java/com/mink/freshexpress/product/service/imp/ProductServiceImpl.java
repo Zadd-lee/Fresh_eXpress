@@ -4,7 +4,6 @@ import com.mink.freshexpress.category.model.Category;
 import com.mink.freshexpress.category.repository.CategoryRepository;
 import com.mink.freshexpress.common.exception.constant.CategoryErrorCode;
 import com.mink.freshexpress.common.exception.constant.ProductErrorCode;
-import com.mink.freshexpress.common.util.Validator;
 import com.mink.freshexpress.product.dto.CreateProductRequestDto;
 import com.mink.freshexpress.product.dto.ProductResponseDto;
 import com.mink.freshexpress.product.model.Product;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.mink.freshexpress.common.util.Validator.*;
 
@@ -55,5 +53,12 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto find(Long id){
         Product product = valid(productRepository.findById(id), ProductErrorCode.NOT_FOUND);
         return new ProductResponseDto(product);
+    }
+
+    @Override
+    public void delete(Long id) {
+        //valid
+        Product product = valid(productRepository.findById(id), ProductErrorCode.NOT_FOUND);
+        product.toggleActive();
     }
 }
