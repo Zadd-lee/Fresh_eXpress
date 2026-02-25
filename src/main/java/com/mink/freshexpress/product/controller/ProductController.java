@@ -2,6 +2,7 @@ package com.mink.freshexpress.product.controller;
 
 import com.mink.freshexpress.product.dto.CreateProductRequestDto;
 import com.mink.freshexpress.product.dto.ProductResponseDto;
+import com.mink.freshexpress.product.dto.UpdateProductRequestDto;
 import com.mink.freshexpress.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +35,19 @@ public class ProductController {
         return new ResponseEntity<>(service.find(id), HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable Long id,
+                                       @RequestBody UpdateProductRequestDto dto) {
+        service.update(id,dto);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
+
 }

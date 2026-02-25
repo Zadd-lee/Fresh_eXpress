@@ -20,7 +20,7 @@ public class CreateProductRequestDto {
     private String storageTemp;
 
     @NotNull
-    private String  defaultSelfLifeDays;
+    private String  defaultShelfLifeDays;
 
     @NotBlank
     private String categoryId;
@@ -31,7 +31,7 @@ public class CreateProductRequestDto {
                 .name(this.name)
                 .unit(Unit.ofBySKUCode(this.code))
                 .storageTemp(StorageTemp.of(this.storageTemp))
-                .defaultShelfLifeDays(Integer.valueOf(this.defaultSelfLifeDays))
+                .defaultShelfLifeDays(Integer.valueOf(this.defaultShelfLifeDays))
                 .isActive(true)
                 .build();
     }

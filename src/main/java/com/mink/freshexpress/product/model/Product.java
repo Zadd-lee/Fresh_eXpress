@@ -52,4 +52,12 @@ public class Product extends BaseEntity {
     public void toggleActive() {
         this.isActive = !this.isActive;
     }
+
+    public void updateDefaultShelfLifeDays(String defaultShelfLifeDays) {
+        this.defaultShelfLifeDays = Integer.parseInt(defaultShelfLifeDays);
+    }
+
+    public void updateStorageTemp(String storageTemp) {
+        this.storageTemp = StorageTemp.of(storageTemp);
+    }
 }
