@@ -2,6 +2,7 @@ package com.mink.freshexpress.warehouse.controller;
 
 import com.mink.freshexpress.warehouse.dto.WarehouseCreateRequestDto;
 import com.mink.freshexpress.warehouse.dto.WarehouseLocationCreateRequestDto;
+import com.mink.freshexpress.warehouse.dto.WarehouseResponseDto;
 import com.mink.freshexpress.warehouse.service.WarehouseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,11 @@ public class WarehouseController {
     public ResponseEntity<Void> createLocation(@PathVariable Long id, @Valid @RequestBody List<WarehouseLocationCreateRequestDto> dto) {
         service.createLocation(id, dto);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<WarehouseResponseDto> find(@PathVariable Long id) {
+        return new ResponseEntity<>(service.find(id), HttpStatus.OK);
     }
 
 }
