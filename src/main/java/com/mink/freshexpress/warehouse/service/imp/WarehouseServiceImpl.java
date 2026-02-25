@@ -5,6 +5,8 @@ import com.mink.freshexpress.common.exception.constant.WarehouseErrorCode;
 import com.mink.freshexpress.common.util.Validator;
 import com.mink.freshexpress.warehouse.dto.WarehouseCreateRequestDto;
 import com.mink.freshexpress.warehouse.dto.WarehouseLocationCreateRequestDto;
+import com.mink.freshexpress.warehouse.dto.WarehouseLocationResponseDto;
+import com.mink.freshexpress.warehouse.dto.WarehouseResponseDto;
 import com.mink.freshexpress.warehouse.model.Warehouse;
 import com.mink.freshexpress.warehouse.model.WarehouseLocation;
 import com.mink.freshexpress.warehouse.repository.WarehouseLocationRepository;
@@ -71,5 +73,17 @@ public class WarehouseServiceImpl implements WarehouseService {
 
         warehouseLocationRepository.saveAll(warehouseLocationList);
 
+    }
+
+    @Override
+    public WarehouseResponseDto find(Long id) {
+        Warehouse warehouse = valid(warehouseRepository.findById(id), WarehouseErrorCode.NOT_FOUND_WAREHOUSE);
+        WarehouseResponseDto warehouseResponseDto = new WarehouseResponseDto(warehouse);
+        warehouse.getWarehouseLocationList()
+                .stream()
+                .map(WarehouseLocationResponseDto::new)
+                .forEach(warehouseResponseDto::addWarehouseLocationRequestDto);
+
+        return warehouseResponseDto;
     }
 }
