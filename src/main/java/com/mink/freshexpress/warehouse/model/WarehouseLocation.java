@@ -27,4 +27,7 @@ public class WarehouseLocation {
     private Warehouse warehouse;
 
 
+    public void updateWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+    }
 }
