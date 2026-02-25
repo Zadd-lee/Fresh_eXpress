@@ -5,13 +5,13 @@ import com.mink.freshexpress.common.exception.constant.ProductErrorCode;
 import lombok.Getter;
 
 @Getter
-public enum StorageTemp {
+public enum Temperature {
     ROOM,
     REFRIGERATED,
     FREEZE;
 
-    public static StorageTemp of(String storageTemp) {
-        for (StorageTemp storageTempEnum : StorageTemp.values()) {
+    public static Temperature of(String storageTemp) {
+        for (Temperature storageTempEnum : Temperature.values()) {
             if (storageTempEnum.name().equalsIgnoreCase(storageTemp)) {
                 return storageTempEnum;
             }
