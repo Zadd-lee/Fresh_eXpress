@@ -19,6 +19,7 @@ public class WarehouseCreateRequestDto {
     public Warehouse toEntity() {
         return Warehouse.builder()
                 .name(this.name)
+                .isActive(true)
                 .address(this.address)
                 .build();
     }
