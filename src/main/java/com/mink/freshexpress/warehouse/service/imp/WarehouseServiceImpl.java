@@ -86,4 +86,15 @@ public class WarehouseServiceImpl implements WarehouseService {
 
         return warehouseResponseDto;
     }
+
+    @Transactional
+    @Override
+    public void delete(Long id) {
+        //valid
+        Warehouse warehouse = valid(warehouseRepository.findById(id), WarehouseErrorCode.NOT_FOUND_WAREHOUSE);
+        warehouse.delete();
+        warehouse.getWarehouseLocationList()
+                .forEach(WarehouseLocation::delete);
+
+    }
 }
