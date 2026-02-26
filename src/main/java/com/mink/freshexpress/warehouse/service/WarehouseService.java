@@ -13,4 +13,6 @@ public interface WarehouseService {
     void createLocation(Long id, @Valid List<WarehouseLocationCreateRequestDto> dto);
 
     WarehouseResponseDto find(Long id);
+
+    void delete(Long id);
 }

@@ -30,4 +30,8 @@ public class WarehouseLocation {
     public void updateWarehouse(Warehouse warehouse) {
         this.warehouse = warehouse;
     }
+
+    public void delete() {
+        this.isActive = false;
+    }
 }

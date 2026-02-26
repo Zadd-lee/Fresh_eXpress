@@ -32,4 +32,7 @@ public class Warehouse extends BaseEntity {
     @OneToMany(mappedBy = "warehouse")
     private List<WarehouseLocation> warehouseLocationList = new ArrayList<>();
 
+    public void delete() {
+        this.isActive = false;
+    }
 }

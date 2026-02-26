@@ -35,4 +35,10 @@ public class WarehouseController {
         return new ResponseEntity<>(service.find(id), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
 }
