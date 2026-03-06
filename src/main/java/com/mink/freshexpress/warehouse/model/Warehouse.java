@@ -35,4 +35,12 @@ public class Warehouse extends BaseEntity {
     public void delete() {
         this.isActive = false;
     }
+
+    public void updateAddress(String address) {
+        this.address = address;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }
