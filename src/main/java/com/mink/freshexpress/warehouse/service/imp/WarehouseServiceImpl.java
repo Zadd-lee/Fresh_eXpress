@@ -3,10 +3,7 @@ package com.mink.freshexpress.warehouse.service.imp;
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.WarehouseErrorCode;
 import com.mink.freshexpress.common.util.Validator;
-import com.mink.freshexpress.warehouse.dto.WarehouseCreateRequestDto;
-import com.mink.freshexpress.warehouse.dto.WarehouseLocationCreateRequestDto;
-import com.mink.freshexpress.warehouse.dto.WarehouseLocationResponseDto;
-import com.mink.freshexpress.warehouse.dto.WarehouseResponseDto;
+import com.mink.freshexpress.warehouse.dto.*;
 import com.mink.freshexpress.warehouse.model.Warehouse;
 import com.mink.freshexpress.warehouse.model.WarehouseLocation;
 import com.mink.freshexpress.warehouse.repository.WarehouseLocationRepository;
@@ -85,6 +82,18 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .forEach(warehouseResponseDto::addWarehouseLocationRequestDto);
 
         return warehouseResponseDto;
+    }
+
+    @Transactional
+    @Override
+    public void update(Long id, WarehouseUpdateRequestDto dto) {
+        Warehouse warehouse = valid(warehouseRepository.findById(id), WarehouseErrorCode.NOT_FOUND_WAREHOUSE);
+        if (dto.getAddress()!=null) {
+            warehouse.updateAddress(dto.getAddress());
+        }
+        if (dto.getName()!=null) {
+            warehouse.updateName(dto.getName());
+        }
     }
 
     @Transactional
