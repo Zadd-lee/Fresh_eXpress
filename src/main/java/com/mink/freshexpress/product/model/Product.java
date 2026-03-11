@@ -4,11 +4,15 @@ import com.mink.freshexpress.category.model.Category;
 import com.mink.freshexpress.common.model.BaseEntity;
 import com.mink.freshexpress.product.constant.Unit;
 import com.mink.freshexpress.product.constant.Temperature;
+import com.mink.freshexpress.stock.model.Stock;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -44,6 +48,9 @@ public class Product extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "product")
+    private List<Stock> stockList = new ArrayList<>();
 
     public void addCategory(Category category) {
         this.category = category;
