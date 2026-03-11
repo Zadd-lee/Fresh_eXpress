@@ -22,6 +22,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.mink.freshexpress.common.util.Validator.*;
 
@@ -38,10 +42,6 @@ public class StockServiceImpl implements StockService {
     @Override
     public void create(CreateStockRequestDto dto) {
 
-        //기준 날짜 생성
-        LocalDate now = LocalDate.now();
-
-
         //valid
         WarehouseLocation location = valid(warehouseLocationRepository.findById(dto.getLocationId()), WarehouseErrorCode.NOT_FOUND_LOCATION);
         Product product = valid(productRepository.findById(dto.getProductId()), ProductErrorCode.NOT_FOUND);
@@ -50,19 +50,69 @@ public class StockServiceImpl implements StockService {
         validateTemp(product, location);
 
         //stock 객체 생성
-        Stock stock = dto.toEntity();
-
-        getManufacturedAt(dto, stock);
-        //유통기한이 기입되지 않았을때 product의 기본 유통 기한을 자동으로 기입
-        stock.updateExpiredAt(getExpiredAt(dto, now, product));
-        //stock의 유통기한 기준으로 status 설정
-        setStatus(stock, now);
+        Stock stock = createStock(dto, product);
 
 
         stockRepository.save(stock);
 
 
+    }
 
+    private static Stock createStock(CreateStockRequestDto dto, Product product) {
+        Stock stock = dto.toEntity();
+
+        LocalDate now = LocalDate.now();
+        getManufacturedAt(dto, stock);
+        //유통기한이 기입되지 않았을때 product의 기본 유통 기한을 자동으로 기입
+        stock.updateExpiredAt(getExpiredAt(dto, now, product));
+        //stock의 유통기한 기준으로 status 설정
+        setStatus(stock, now);
+        return stock;
+    }
+
+    @Transactional
+    @Override
+    public void creatBulk(List<CreateStockRequestDto> dtoList) {
+        Map<Long, Product> productMap = new HashMap<>();
+        Map<Long, WarehouseLocation> locationMap = new HashMap<>();
+
+        List<Stock> stockList = new ArrayList<>();
+
+        for (CreateStockRequestDto dto : dtoList) {
+            //valid
+            Product product = getProduct(dto, productMap);
+            WarehouseLocation location = getLocation(dto, locationMap);
+
+            //product의 보관 온도와 다른 보관온도를 가진 location을 설정시 error 출력
+            validateTemp(product, location);
+
+            //stock 객체 생성
+            stockList.add(createStock(dto, product));
+        }
+
+        stockRepository.saveAll(stockList);
+    }
+
+    private Product getProduct(CreateStockRequestDto dto, Map<Long, Product> productMap) {
+        Product product;
+        if (!productMap.containsKey(dto.getProductId())) {
+            product = valid(productRepository.findById(dto.getProductId()), ProductErrorCode.NOT_FOUND);
+            productMap.put(dto.getProductId(), product);
+        }else {
+            product = productMap.get(dto.getProductId());
+        }
+        return product;
+    }
+
+    private WarehouseLocation getLocation(CreateStockRequestDto dto, Map<Long, WarehouseLocation> locationMap) {
+        WarehouseLocation location;
+        if (!locationMap.containsKey(dto.getLocationId())) {
+            location = valid(warehouseLocationRepository.findById(dto.getLocationId()), WarehouseErrorCode.NOT_FOUND_LOCATION);
+            locationMap.put(dto.getLocationId(), location);
+        } else {
+            location = locationMap.get(dto.getLocationId());
+        }
+        return location;
     }
 
     private static void validateTemp(Product product, WarehouseLocation location) {
@@ -90,7 +140,7 @@ public class StockServiceImpl implements StockService {
             formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         } else if (input.matches("\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])")) {
             formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        }else{
+        } else {
             throw new CustomException(CommonErrorCode.INVALID_DATEFORMAT);
         }
         return formatter;
@@ -106,7 +156,7 @@ public class StockServiceImpl implements StockService {
     private static void setStatus(Stock stock, LocalDate now) {
         int days = Period.between(LocalDate.from(stock.getExpiredAt()), now).getDays();
         if (days <= 0) stock.updateStatus(Status.EXPIRED);
-        else if (days<=3) stock.updateStatus(Status.EXPIRING_SOON);
+        else if (days <= 3) stock.updateStatus(Status.EXPIRING_SOON);
         else stock.updateStatus(Status.NORMAL);
     }
 }
