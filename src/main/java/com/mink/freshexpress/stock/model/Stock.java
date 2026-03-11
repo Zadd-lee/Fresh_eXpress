@@ -41,4 +41,15 @@ public class Stock extends BaseEntity {
     @JoinColumn(name = "location_id")
     private WarehouseLocation location;
 
+    public void updateManufacturedAt(LocalDate manufacturedAt) {
+        this.manufacturedAt = manufacturedAt;
+    }
+
+    public void updateExpiredAt(LocalDateTime expiredAt) {
+        this.expiredAt = expiredAt;
+    }
+
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
 }

@@ -22,6 +22,7 @@ public class WarehouseLocation {
     @Column(nullable = false)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private Temperature temperature;
     private String code;
     private boolean isActive;
