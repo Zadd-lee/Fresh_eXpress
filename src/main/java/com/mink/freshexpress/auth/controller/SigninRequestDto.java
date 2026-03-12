@@ -30,6 +30,7 @@ public class SigninRequestDto {
                 .name(this.name)
                 .phone(this.phone)
                 .role(Role.of(role))
+                .isActive(true)
                 .build();
     }
 

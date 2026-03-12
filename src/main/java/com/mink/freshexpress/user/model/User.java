@@ -26,9 +26,8 @@ public class User extends BaseEntity {
     private String name;
     private String phone;
 
-    @Column(nullable = true)
     @ColumnDefault("true")
-    private boolean enabled;
+    private boolean isActive;
 
 
     @Column(nullable = false)
@@ -41,7 +40,7 @@ public class User extends BaseEntity {
     }
 
     public void delete() {
-        this.enabled = false;
+        this.isActive = false;
 
     }
 
