@@ -26,7 +26,8 @@ public class Stock extends BaseEntity {
     private Long id;
 
     private String lot;
-    private BigInteger quantity;
+    private BigInteger initialQuantity;
+    private BigInteger currentQuantity;
     private LocalDate manufacturedAt;
     private LocalDateTime expiredAt;
 

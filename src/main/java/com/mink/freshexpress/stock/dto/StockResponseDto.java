@@ -4,7 +4,6 @@ import com.mink.freshexpress.product.model.Product;
 import com.mink.freshexpress.stock.model.Stock;
 import com.mink.freshexpress.warehouse.model.Warehouse;
 import com.mink.freshexpress.warehouse.model.WarehouseLocation;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.format.DateTimeFormatter;
@@ -32,7 +31,7 @@ public class StockResponseDto {
         Product product = stock.getProduct();
 
         this.lot = stock.getLot();
-        this.quantity = stock.getQuantity().toString();
+        this.quantity = stock.getInitialQuantity().toString();
         this.manufacturedAt = stock.getManufacturedAt().format(dateformat);
         this.expiredAt = stock.getExpiredAt().format(dateformat);
         this.status = stock.getStatus().name();
