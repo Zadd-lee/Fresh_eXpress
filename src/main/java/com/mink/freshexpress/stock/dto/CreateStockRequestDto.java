@@ -37,6 +37,7 @@ public class CreateStockRequestDto {
         return Stock.builder()
                 .lot(this.lot)
                 .initialQuantity(this.quantity)
+                .currentQuantity(this.quantity)
                 .build();
     }
 }
