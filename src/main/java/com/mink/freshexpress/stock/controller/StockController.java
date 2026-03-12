@@ -33,4 +33,10 @@ public class StockController {
     public ResponseEntity<StockResponseDto> get(@PathVariable long id) {
         return new ResponseEntity<>(service.get(id),HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> discard(@PathVariable Long id) {
+        service.discard(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 }

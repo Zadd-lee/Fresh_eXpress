@@ -1,7 +1,6 @@
 package com.mink.freshexpress.stock.service.imp;
 
 import com.mink.freshexpress.common.exception.CustomException;
-import com.mink.freshexpress.common.exception.constant.CommonErrorCode;
 import com.mink.freshexpress.common.exception.constant.ProductErrorCode;
 import com.mink.freshexpress.common.exception.constant.StockErrorCode;
 import com.mink.freshexpress.common.exception.constant.WarehouseErrorCode;
@@ -22,11 +21,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.mink.freshexpress.common.util.DateFormatter.getDateTime;
-import static com.mink.freshexpress.common.util.Validator.*;
+import static com.mink.freshexpress.common.util.Validator.valid;
 
 
 @RequiredArgsConstructor
@@ -101,6 +102,17 @@ public class StockServiceImpl implements StockService {
     @Override
     public StockResponseDto get(long id) {
         return new StockResponseDto(valid(stockRepository.findById(id), StockErrorCode.NOT_FOUND));
+    }
+
+    @Transactional
+    @Override
+    public void discard(Long id) {
+        Stock stock = valid(stockRepository.findById(id), StockErrorCode.NOT_FOUND);
+        if (stock.getStatus() == Status.DISCARDED) {
+            throw new CustomException(StockErrorCode.ALREADY_DISCARD);
+        } else {
+            stock.updateStatus(Status.DISCARDED);
+        }
     }
 
     private Product getProduct(CreateStockRequestDto dto, Map<Long, Product> productMap) {
