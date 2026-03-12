@@ -9,6 +9,7 @@ import com.mink.freshexpress.product.model.Product;
 import com.mink.freshexpress.product.repository.ProductRepository;
 import com.mink.freshexpress.stock.constant.Status;
 import com.mink.freshexpress.stock.dto.CreateStockRequestDto;
+import com.mink.freshexpress.stock.dto.StockResponseDto;
 import com.mink.freshexpress.stock.model.Stock;
 import com.mink.freshexpress.stock.repository.StockRepository;
 import com.mink.freshexpress.stock.service.StockService;
@@ -22,10 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.mink.freshexpress.common.util.Validator.*;
 
@@ -91,6 +89,11 @@ public class StockServiceImpl implements StockService {
         }
 
         stockRepository.saveAll(stockList);
+    }
+
+    @Override
+    public StockResponseDto get(long id) {
+        return new StockResponseDto(valid(stockRepository.findById(id), StockErrorCode.NOT_FOUND));
     }
 
     private Product getProduct(CreateStockRequestDto dto, Map<Long, Product> productMap) {
