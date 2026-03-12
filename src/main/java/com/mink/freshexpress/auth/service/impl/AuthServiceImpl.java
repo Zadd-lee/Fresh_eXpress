@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
         //validate
         userRepository.findByEmail(dto.getEmail())
                 .ifPresent(user -> {
-                    boolean isUnable = !user.isEnabled();
+                    boolean isUnable = !user.isActive();
                     if (isUnable) {
                         throw new CustomException(UserErrorCode.CANCELED_USER);
                     } else {

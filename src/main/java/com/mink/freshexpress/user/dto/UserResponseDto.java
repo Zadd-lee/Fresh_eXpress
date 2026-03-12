@@ -22,7 +22,7 @@ public class UserResponseDto implements Serializable {
         this.email = user.getEmail();
         this.name = user.getName();
         this.phone = user.getPhone();
-        this.enabled = user.isEnabled();
+        this.enabled = user.isActive();
         this.role = user.getRole().getName();
     }
 }
