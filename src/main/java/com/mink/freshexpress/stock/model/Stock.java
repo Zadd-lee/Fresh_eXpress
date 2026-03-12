@@ -52,4 +52,12 @@ public class Stock extends BaseEntity {
     public void updateStatus(Status status) {
         this.status = status;
     }
+
+    public void updateLocation(WarehouseLocation location) {
+        this.location = location;
+    }
+
+    public void updateProduct(Product product) {
+        this.product = product;
+    }
 }
