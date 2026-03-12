@@ -25,6 +25,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static com.mink.freshexpress.common.util.DateFormatter.getDateTime;
 import static com.mink.freshexpress.common.util.Validator.*;
 
 
@@ -64,7 +65,7 @@ public class StockServiceImpl implements StockService {
         LocalDate now = LocalDate.now();
         getManufacturedAt(dto, stock);
         //유통기한이 기입되지 않았을때 product의 기본 유통 기한을 자동으로 기입
-        stock.updateExpiredAt(getExpiredAt(dto, now, product));
+        stock.updateExpiredAt(getExpiredAt(dto, product));
         //stock의 유통기한 기준으로 status 설정
         setStatus(stock, now);
         return stock;
@@ -130,34 +131,20 @@ public class StockServiceImpl implements StockService {
         }
     }
 
-    private static LocalDateTime getExpiredAt(CreateStockRequestDto dto, LocalDate now, Product product) {
-        LocalDateTime expiredAt;
+    private static LocalDateTime getExpiredAt(CreateStockRequestDto dto, Product product) {
 
         if (dto.getExpiredAt() != null) {
-            DateTimeFormatter formatter = getDateFormatter(dto.getExpiredAt());
-            expiredAt = LocalDateTime.parse(dto.getExpiredAt(), formatter);
+            return getDateTime(dto.getExpiredAt());
         } else {
-            expiredAt = now
-                    .plusDays(product.getDefaultShelfLifeDays()).atStartOfDay();
+            return LocalDate.now().plusDays(product.getDefaultShelfLifeDays()).atStartOfDay();
         }
-        return expiredAt;
     }
 
-    private static DateTimeFormatter getDateFormatter(String input) {
-        DateTimeFormatter formatter;
-        if (input.matches("\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]) ([0-1][0-9]|2[0-3]):([0-5][0-9])")) {
-            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        } else if (input.matches("\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])")) {
-            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        } else {
-            throw new CustomException(CommonErrorCode.INVALID_DATEFORMAT);
-        }
-        return formatter;
-    }
+
 
     private static void getManufacturedAt(CreateStockRequestDto dto, Stock stock) {
         if (dto.getManufacturedAt() != null) {
-            LocalDate manufacturedAt = LocalDate.parse(dto.getManufacturedAt(), getDateFormatter(dto.getManufacturedAt()));
+            LocalDate manufacturedAt = getDateTime(dto.getManufacturedAt()).toLocalDate();
             stock.updateManufacturedAt(manufacturedAt);
         }
     }
