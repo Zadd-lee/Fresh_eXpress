@@ -12,4 +12,6 @@ public interface StockService {
     void creatBulk(@Valid List<CreateStockRequestDto> dtoList);
 
     StockResponseDto get(long id);
+
+    void discard(Long id);
 }

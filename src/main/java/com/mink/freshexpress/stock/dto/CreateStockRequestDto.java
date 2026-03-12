@@ -36,7 +36,8 @@ public class CreateStockRequestDto {
     public Stock toEntity() {
         return Stock.builder()
                 .lot(this.lot)
-                .quantity(this.quantity)
+                .initialQuantity(this.quantity)
+                .currentQuantity(this.quantity)
                 .build();
     }
 }
