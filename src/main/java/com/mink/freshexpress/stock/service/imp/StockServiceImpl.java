@@ -49,6 +49,8 @@ public class StockServiceImpl implements StockService {
 
         //stock 객체 생성
         Stock stock = createStock(dto, product);
+        stock.updateLocation(location);
+        stock.updateProduct(product);
 
 
         stockRepository.save(stock);
@@ -85,7 +87,11 @@ public class StockServiceImpl implements StockService {
             validateTemp(product, location);
 
             //stock 객체 생성
-            stockList.add(createStock(dto, product));
+            Stock stock = createStock(dto, product);
+            stock.updateLocation(location);
+            stock.updateProduct(product);
+
+            stockList.add(stock);
         }
 
         stockRepository.saveAll(stockList);
