@@ -45,4 +45,7 @@ public class Order extends BaseEntity {
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItemList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "order")
+    private List<StockReservation> stockReservationList = new ArrayList<>();
 }

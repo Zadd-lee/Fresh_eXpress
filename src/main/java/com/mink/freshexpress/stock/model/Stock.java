@@ -1,6 +1,7 @@
 package com.mink.freshexpress.stock.model;
 
 import com.mink.freshexpress.common.model.BaseEntity;
+import com.mink.freshexpress.order.model.StockReservation;
 import com.mink.freshexpress.product.model.Product;
 import com.mink.freshexpress.stock.constant.Status;
 import com.mink.freshexpress.warehouse.model.WarehouseLocation;
@@ -13,6 +14,8 @@ import lombok.NoArgsConstructor;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -41,6 +44,9 @@ public class Stock extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private WarehouseLocation location;
+
+    @OneToMany(mappedBy = "stock")
+    private List<StockReservation> reservationList = new ArrayList<>();
 
     public void updateManufacturedAt(LocalDate manufacturedAt) {
         this.manufacturedAt = manufacturedAt;
