@@ -2,10 +2,14 @@ package com.mink.freshexpress.user.model;
 
 import com.mink.freshexpress.auth.constant.Role;
 import com.mink.freshexpress.common.model.BaseEntity;
+import com.mink.freshexpress.order.model.Order;
 import com.mink.freshexpress.user.controller.UpdateUserRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +37,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orderList = new ArrayList<>();
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
