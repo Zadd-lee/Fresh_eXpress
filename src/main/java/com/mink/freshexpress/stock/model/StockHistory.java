@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +26,7 @@ public class StockHistory extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private StockHistoryType type;
     @Column(nullable = false)
-    private BigInteger quantity;
+    private BigDecimal quantity;
     private String reason;
 
     @ManyToOne

@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +21,7 @@ public class OrderItem extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private BigInteger quantity;
+    private BigDecimal quantity;
     @Column(nullable = false)
     private Unit unit;
 

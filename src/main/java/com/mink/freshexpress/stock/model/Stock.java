@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,8 +29,8 @@ public class Stock extends BaseEntity {
     private Long id;
 
     private String lot;
-    private BigInteger initialQuantity;
-    private BigInteger currentQuantity;
+    private BigDecimal initialQuantity;
+    private BigDecimal currentQuantity;
     private LocalDate manufacturedAt;
     private LocalDateTime expiredAt;
 
