@@ -18,6 +18,7 @@ import java.util.List;
 @Getter
 @Builder
 @Entity
+@Table(name = "orders")
 public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,4 +49,12 @@ public class Order extends BaseEntity {
 
     @OneToMany(mappedBy = "order")
     private List<StockReservation> stockReservationList = new ArrayList<>();
+
+    public void updateRecipientName(String name) {
+        this.recipientName = name;
+    }
+
+    public void updateCustomer(User user) {
+        this.customer = user;
+    }
 }
