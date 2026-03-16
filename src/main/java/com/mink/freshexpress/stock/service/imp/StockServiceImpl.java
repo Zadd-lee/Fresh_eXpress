@@ -2,28 +2,30 @@ package com.mink.freshexpress.stock.service.imp;
 
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.*;
-import com.mink.freshexpress.order.model.Order;
 import com.mink.freshexpress.order.model.OrderItem;
 import com.mink.freshexpress.order.model.StockReservation;
 import com.mink.freshexpress.order.repository.OrderItemRepository;
-import com.mink.freshexpress.order.repository.OrderRepository;
 import com.mink.freshexpress.product.model.Product;
 import com.mink.freshexpress.product.repository.ProductRepository;
 import com.mink.freshexpress.stock.constant.Status;
+import com.mink.freshexpress.stock.constant.StockHistoryType;
 import com.mink.freshexpress.stock.dto.CreateStockRequestDto;
 import com.mink.freshexpress.stock.dto.CreateStockReservationDto;
 import com.mink.freshexpress.stock.dto.StockResponseDto;
 import com.mink.freshexpress.stock.model.Stock;
+import com.mink.freshexpress.stock.model.StockHistory;
+import com.mink.freshexpress.stock.repository.StockHistoryRepository;
 import com.mink.freshexpress.stock.repository.StockRepository;
 import com.mink.freshexpress.stock.repository.StockReservationRepository;
 import com.mink.freshexpress.stock.service.StockService;
+import com.mink.freshexpress.user.model.User;
+import com.mink.freshexpress.user.repository.UserRepository;
 import com.mink.freshexpress.warehouse.model.WarehouseLocation;
 import com.mink.freshexpress.warehouse.repository.WarehouseLocationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -41,13 +43,16 @@ public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
     private final OrderItemRepository orderItemRepository;
     private final StockReservationRepository stockReservationRepository;
+    private final StockHistoryRepository stockHistoryRepository;
+    private final UserRepository userRepository;
 
 
     @Transactional
     @Override
-    public void create(CreateStockRequestDto dto) {
+    public void create(String email, CreateStockRequestDto dto) {
 
         //valid
+        User user = valid(userRepository.findByEmail(email), CommonErrorCode.INTERNAL_SERVER_ERROR);
         WarehouseLocation location = valid(warehouseLocationRepository.findById(dto.getLocationId()), WarehouseErrorCode.NOT_FOUND_LOCATION);
         Product product = valid(productRepository.findById(dto.getProductId()), ProductErrorCode.NOT_FOUND);
 
@@ -59,9 +64,16 @@ public class StockServiceImpl implements StockService {
         stock.updateLocation(location);
         stock.updateProduct(product);
 
-
         stockRepository.save(stock);
 
+
+        //stock history 기록
+        stockHistoryRepository.save(StockHistory.builder()
+                .actor(user)
+                .stock(stock)
+                .type(StockHistoryType.IN)
+                .quantity(stock.getCurrentQuantity())
+                .build());
 
     }
 
@@ -150,7 +162,7 @@ public class StockServiceImpl implements StockService {
         if (!productMap.containsKey(dto.getProductId())) {
             product = valid(productRepository.findById(dto.getProductId()), ProductErrorCode.NOT_FOUND);
             productMap.put(dto.getProductId(), product);
-        }else {
+        } else {
             product = productMap.get(dto.getProductId());
         }
         return product;
@@ -181,7 +193,6 @@ public class StockServiceImpl implements StockService {
             return LocalDate.now().plusDays(product.getDefaultShelfLifeDays()).atStartOfDay();
         }
     }
-
 
 
     private static void getManufacturedAt(CreateStockRequestDto dto, Stock stock) {
