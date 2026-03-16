@@ -27,8 +27,9 @@ public class StockController {
     }
 
     @PostMapping("/bulk")
-    public ResponseEntity<Void> createBulk(@Valid @RequestBody List<CreateStockRequestDto> dtoList) {
-        service.creatBulk(dtoList);
+    public ResponseEntity<Void> createBulk(@AuthenticationPrincipal UserDetails userDetails,
+                                           @Valid @RequestBody List<CreateStockRequestDto> dtoList) {
+        service.creatBulk(userDetails.getUsername(),dtoList);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

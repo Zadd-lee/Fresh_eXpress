@@ -10,7 +10,7 @@ import java.util.List;
 public interface StockService {
     void create(String email, @Valid CreateStockRequestDto dto);
 
-    void creatBulk(@Valid List<CreateStockRequestDto> dtoList);
+    void creatBulk(String email, @Valid List<CreateStockRequestDto> dtoList);
 
     StockResponseDto get(long id);
 

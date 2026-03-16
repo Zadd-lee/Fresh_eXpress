@@ -91,7 +91,9 @@ public class StockServiceImpl implements StockService {
 
     @Transactional
     @Override
-    public void creatBulk(List<CreateStockRequestDto> dtoList) {
+    public void creatBulk(String email, List<CreateStockRequestDto> dtoList) {
+        //user vaild
+        User user = valid(userRepository.findByEmail(email), CommonErrorCode.INTERNAL_SERVER_ERROR);
         Map<Long, Product> productMap = new HashMap<>();
         Map<Long, WarehouseLocation> locationMap = new HashMap<>();
 
@@ -111,6 +113,16 @@ public class StockServiceImpl implements StockService {
             stock.updateProduct(product);
 
             stockList.add(stock);
+
+
+
+            //stock history 기록
+            stockHistoryRepository.save(StockHistory.builder()
+                    .actor(user)
+                    .stock(stock)
+                    .type(StockHistoryType.IN)
+                    .quantity(stock.getCurrentQuantity())
+                    .build());
         }
 
         stockRepository.saveAll(stockList);
