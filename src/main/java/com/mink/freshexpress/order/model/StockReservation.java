@@ -36,5 +36,11 @@ public class StockReservation extends BaseEntity {
     private Stock stock;
 
 
+    public void updateOrder(Order order) {
+        this.order = order;
+    }
 
+    public void updateStock(Stock stock) {
+        this.stock = stock;
+    }
 }

@@ -2,6 +2,7 @@ package com.mink.freshexpress.order.controller;
 
 import com.mink.freshexpress.order.dto.CreateOrderRequestDto;
 import com.mink.freshexpress.order.service.OrderService;
+import com.mink.freshexpress.stock.dto.CreateStockReservationDto;
 import com.mink.freshexpress.stock.service.StockService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/order")
 @RequiredArgsConstructor
@@ -25,7 +28,8 @@ public class OrderController {
     public ResponseEntity<Void> create(@AuthenticationPrincipal UserDetails authenticatedPrincipal
             , @Valid @RequestBody CreateOrderRequestDto dto) {
         String username = authenticatedPrincipal.getUsername();
-        orderService.create(username,dto);
+        List<CreateStockReservationDto> stockReservationDto = orderService.create(username,dto);
+        stockService.createReservation(stockReservationDto);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

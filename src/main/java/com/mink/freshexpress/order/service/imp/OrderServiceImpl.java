@@ -8,10 +8,12 @@ import com.mink.freshexpress.order.dto.CreateOrderItemRequestDto;
 import com.mink.freshexpress.order.dto.CreateOrderRequestDto;
 import com.mink.freshexpress.order.model.Order;
 import com.mink.freshexpress.order.model.OrderItem;
+import com.mink.freshexpress.order.model.StockReservation;
 import com.mink.freshexpress.order.repository.OrderItemRepository;
 import com.mink.freshexpress.order.repository.OrderRepository;
 import com.mink.freshexpress.order.service.OrderService;
 import com.mink.freshexpress.product.model.Product;
+import com.mink.freshexpress.stock.dto.CreateStockReservationDto;
 import com.mink.freshexpress.stock.model.Stock;
 import com.mink.freshexpress.user.model.User;
 import com.mink.freshexpress.user.repository.UserRepository;
@@ -40,22 +42,28 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public void create(String username, CreateOrderRequestDto dto) {
+    public List<CreateStockReservationDto> create(String username, CreateOrderRequestDto dto) {
         //valid
         User user = valid(userRepository.findByEmail(username), CommonErrorCode.INTERNAL_SERVER_ERROR);
         Warehouse warehouse = valid(warehouseRepository.findById(dto.getWarehouseId()), WarehouseErrorCode.NOT_FOUND_WAREHOUSE);
 
-        Map<Long, Stock> stockMap = warehouse.getAllStockList()
+        Map<Long, Stock> stockMapByProductId = warehouse.getAllStockList()
                 .stream()
-                .collect(Collectors.toMap(Stock::getId, Function.identity()));
+                .collect(Collectors.toMap(
+                        stock -> stock.getProduct().getId(),
+                        Function.identity()));
 
+        //order 생성 및 저장
         Order order = dto.toEntity();
         order.updateCustomer(user);
+        orderRepository.save(order);
 
-        List<OrderItem> orderItemList = new ArrayList<>();
+
+        List<CreateStockReservationDto> stockReservationDtoList = new ArrayList<>();
 
         for (CreateOrderItemRequestDto orderItemRequestDto : dto.getOrderItemList()) {
-            Stock stock = stockMap.get(orderItemRequestDto.getProductId());
+
+            Stock stock = stockMapByProductId.get(orderItemRequestDto.getProductId());
             //valid stock 의 갯수와 order의 갯수가 맞는지 확인
             validOrderItemWithStock(orderItemRequestDto, stock);
 
@@ -67,12 +75,15 @@ public class OrderServiceImpl implements OrderService {
                     .quantity(BigDecimal.valueOf(orderItemRequestDto.getQuantity()))
                     .unit(product.getUnit())
                     .build();
-            orderItemList.add(orderItem);
+
+            orderItemRepository.save(orderItem);
+
+            //stock reservation Dto 생성
+            stockReservationDtoList.add(new CreateStockReservationDto(orderItemRequestDto.getQuantity(), order.getId(), stock.getId()));
         }
 
 
-        orderRepository.save(order);
-        orderItemRepository.saveAll(orderItemList);
+        return stockReservationDtoList;
     }
 
     private static void validOrderItemWithStock(CreateOrderItemRequestDto orderItemRequestDto, Stock stock) {

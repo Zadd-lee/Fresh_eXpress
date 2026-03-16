@@ -1,16 +1,19 @@
 package com.mink.freshexpress.stock.service.imp;
 
 import com.mink.freshexpress.common.exception.CustomException;
-import com.mink.freshexpress.common.exception.constant.ProductErrorCode;
-import com.mink.freshexpress.common.exception.constant.StockErrorCode;
-import com.mink.freshexpress.common.exception.constant.WarehouseErrorCode;
+import com.mink.freshexpress.common.exception.constant.*;
+import com.mink.freshexpress.order.model.Order;
+import com.mink.freshexpress.order.model.StockReservation;
+import com.mink.freshexpress.order.repository.OrderRepository;
 import com.mink.freshexpress.product.model.Product;
 import com.mink.freshexpress.product.repository.ProductRepository;
 import com.mink.freshexpress.stock.constant.Status;
 import com.mink.freshexpress.stock.dto.CreateStockRequestDto;
+import com.mink.freshexpress.stock.dto.CreateStockReservationDto;
 import com.mink.freshexpress.stock.dto.StockResponseDto;
 import com.mink.freshexpress.stock.model.Stock;
 import com.mink.freshexpress.stock.repository.StockRepository;
+import com.mink.freshexpress.stock.repository.StockReservationRepository;
 import com.mink.freshexpress.stock.service.StockService;
 import com.mink.freshexpress.warehouse.model.WarehouseLocation;
 import com.mink.freshexpress.warehouse.repository.WarehouseLocationRepository;
@@ -21,10 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.mink.freshexpress.common.util.DateFormatter.getDateTime;
 import static com.mink.freshexpress.common.util.Validator.valid;
@@ -36,6 +36,8 @@ public class StockServiceImpl implements StockService {
     private final WarehouseLocationRepository warehouseLocationRepository;
     private final ProductRepository productRepository;
     private final StockRepository stockRepository;
+    private final OrderRepository orderRepository;
+    private final StockReservationRepository stockReservationRepository;
 
 
     @Transactional
@@ -113,6 +115,25 @@ public class StockServiceImpl implements StockService {
         } else {
             stock.updateStatus(Status.DISCARDED);
         }
+    }
+
+    @Transactional
+    @Override
+    public void createReservation(List<CreateStockReservationDto> dtoList) {
+        List<StockReservation> stockReservationList = new ArrayList<>();
+        for (CreateStockReservationDto dto : dtoList) {
+            //valid
+            Order order = valid(orderRepository.findById(dto.getOrderId()), CommonErrorCode.INTERNAL_SERVER_ERROR);
+            Stock stock = valid(stockRepository.findById(dto.getStockId()), CommonErrorCode.INTERNAL_SERVER_ERROR);
+
+            StockReservation stockReservation = dto.toEntity();
+            stockReservation.updateOrder(order);
+            stockReservation.updateStock(stock);
+
+            stockReservationList.add(stockReservation);
+        }
+        stockReservationRepository.saveAll(stockReservationList);
+
     }
 
     private Product getProduct(CreateStockRequestDto dto, Map<Long, Product> productMap) {
