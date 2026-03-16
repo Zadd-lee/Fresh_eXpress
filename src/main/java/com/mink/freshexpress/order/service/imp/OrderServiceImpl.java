@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
             orderItemRepository.save(orderItem);
 
             //stock reservation Dto 생성
-            stockReservationDtoList.add(new CreateStockReservationDto(orderItemRequestDto.getQuantity(), order.getId(), stock.getId()));
+            stockReservationDtoList.add(new CreateStockReservationDto(orderItemRequestDto.getQuantity(), orderItem.getId(), stock.getId()));
         }
 
 

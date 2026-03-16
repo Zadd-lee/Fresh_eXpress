@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Getter
 public class CreateStockReservationDto {
     private final Integer quantity;
-    private final Long orderId;
+    private final Long orderItemId;
     private final Long stockId;
     public StockReservation toEntity() {
         return StockReservation.builder()

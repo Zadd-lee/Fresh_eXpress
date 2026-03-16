@@ -3,7 +3,9 @@ package com.mink.freshexpress.stock.service.imp;
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.*;
 import com.mink.freshexpress.order.model.Order;
+import com.mink.freshexpress.order.model.OrderItem;
 import com.mink.freshexpress.order.model.StockReservation;
+import com.mink.freshexpress.order.repository.OrderItemRepository;
 import com.mink.freshexpress.order.repository.OrderRepository;
 import com.mink.freshexpress.product.model.Product;
 import com.mink.freshexpress.product.repository.ProductRepository;
@@ -21,6 +23,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -36,7 +39,7 @@ public class StockServiceImpl implements StockService {
     private final WarehouseLocationRepository warehouseLocationRepository;
     private final ProductRepository productRepository;
     private final StockRepository stockRepository;
-    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
     private final StockReservationRepository stockReservationRepository;
 
 
@@ -123,11 +126,17 @@ public class StockServiceImpl implements StockService {
         List<StockReservation> stockReservationList = new ArrayList<>();
         for (CreateStockReservationDto dto : dtoList) {
             //valid
-            Order order = valid(orderRepository.findById(dto.getOrderId()), CommonErrorCode.INTERNAL_SERVER_ERROR);
+            OrderItem orderItem = valid(orderItemRepository.findById(dto.getOrderItemId()), CommonErrorCode.INTERNAL_SERVER_ERROR);
             Stock stock = valid(stockRepository.findById(dto.getStockId()), CommonErrorCode.INTERNAL_SERVER_ERROR);
 
+            //stock 의 currentQuantity 변경
+            stock.updateCurrentQuantity(stock.getCurrentQuantity()
+                    .subtract(orderItem.getQuantity()));
+
+
+            //reservation 생성
             StockReservation stockReservation = dto.toEntity();
-            stockReservation.updateOrder(order);
+            stockReservation.updateOrder(orderItem.getOrder());
             stockReservation.updateStock(stock);
 
             stockReservationList.add(stockReservation);

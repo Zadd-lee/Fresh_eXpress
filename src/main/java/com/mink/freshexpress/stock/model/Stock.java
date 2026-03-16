@@ -67,4 +67,8 @@ public class Stock extends BaseEntity {
     public void updateProduct(Product product) {
         this.product = product;
     }
+
+    public void updateCurrentQuantity(BigDecimal subtract) {
+        this.currentQuantity = subtract;
+    }
 }
