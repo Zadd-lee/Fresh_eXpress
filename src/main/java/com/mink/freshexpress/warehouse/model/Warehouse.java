@@ -1,6 +1,7 @@
 package com.mink.freshexpress.warehouse.model;
 
 import com.mink.freshexpress.common.model.BaseEntity;
+import com.mink.freshexpress.stock.model.Stock;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,5 +43,11 @@ public class Warehouse extends BaseEntity {
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public List<Stock> getAllStockList() {
+        return warehouseLocationList.stream()
+                .flatMap(l -> l.getStockList().stream())
+                .toList();
     }
 }

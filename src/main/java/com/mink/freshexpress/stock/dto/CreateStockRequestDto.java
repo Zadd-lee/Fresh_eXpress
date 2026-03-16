@@ -7,10 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.swing.text.DateFormatter;
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.math.BigDecimal;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +18,7 @@ public class CreateStockRequestDto {
     private String lot;
 
     @Positive
-    private BigInteger quantity;
+    private BigDecimal quantity;
 
     private String manufacturedAt;
 

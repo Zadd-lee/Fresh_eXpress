@@ -1,6 +1,7 @@
 package com.mink.freshexpress.stock.service;
 
 import com.mink.freshexpress.stock.dto.CreateStockRequestDto;
+import com.mink.freshexpress.stock.dto.CreateStockReservationDto;
 import com.mink.freshexpress.stock.dto.StockResponseDto;
 import jakarta.validation.Valid;
 
@@ -14,4 +15,6 @@ public interface StockService {
     StockResponseDto get(long id);
 
     void discard(Long id);
+
+    void createReservation(List<CreateStockReservationDto> dto);
 }
