@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.mink.freshexpress.common.util.Validator.*;
+import static com.mink.freshexpress.common.util.Validator.valid;
 
 @Service
 @RequiredArgsConstructor
@@ -28,26 +28,17 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = dto.toEntity();
 
         //상위 카테고리가 있을 경우
-        String parentCategoryName = dto.getParentCategoryName();
-        if (parentCategoryName == null || parentCategoryName.isBlank()) {//최상위 카테고리일 경우
+        Long parentCategoryId = Long.valueOf(dto.getParentCategoryId());
+        if (parentCategoryId == null) {//최상위 카테고리일 경우
             category.updateDepth(0);
         } else {//상위 카테고리가 있는 경우
-            List<Category> parentCategoryList = repository.findByNameContains(parentCategoryName);
+            Category parentCategory = valid(repository.findById(parentCategoryId), CategoryErrorCode.PARENT_CATEGORY_NOT_FOUND);
 
-            //상위 카테고리 validate
-            if (parentCategoryList.size() > 1) {
-                throw new CustomException(CategoryErrorCode.MULTIPLE_PARENT_CATEGORY);
-            } else if (parentCategoryList.isEmpty() || !parentCategoryList.get(0).isEnable()) {
-                throw new CustomException(CategoryErrorCode.PARENT_CATEGORY_NOT_FOUND);
-            }
-
-
-            //child 에 parent 할당
-            Category parent = parentCategoryList.get(0);
-            category.addParent(parent);
+            //child 에 parent 할당;
+            category.addParent(parentCategory);
 
             //depth 추가 설정
-            category.updateDepth(parent.getDepth() + 1);
+            category.updateDepth(parentCategory.getDepth() + 1);
         }
         repository.save(category);
 
