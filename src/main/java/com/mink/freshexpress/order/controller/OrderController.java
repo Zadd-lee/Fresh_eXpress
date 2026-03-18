@@ -1,6 +1,7 @@
 package com.mink.freshexpress.order.controller;
 
 import com.mink.freshexpress.order.dto.CreateOrderRequestDto;
+import com.mink.freshexpress.order.dto.OrderResponseDto;
 import com.mink.freshexpress.order.service.OrderService;
 import com.mink.freshexpress.stock.dto.CreateStockReservationDto;
 import com.mink.freshexpress.stock.service.StockService;
@@ -10,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +29,12 @@ public class OrderController {
         List<CreateStockReservationDto> stockReservationDto = orderService.create(username,dto);
         stockService.createReservation(stockReservationDto);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponseDto> find(@PathVariable Long id) {
+        return new ResponseEntity<>(orderService.findById(id), HttpStatus.OK);
+
     }
 
 }
