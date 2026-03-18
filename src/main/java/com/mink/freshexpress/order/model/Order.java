@@ -2,6 +2,7 @@ package com.mink.freshexpress.order.model;
 
 import com.mink.freshexpress.common.model.BaseEntity;
 import com.mink.freshexpress.order.constant.OrderStatus;
+import com.mink.freshexpress.stock.model.StockHistory;
 import com.mink.freshexpress.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,11 +51,16 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order")
     private List<StockReservation> stockReservationList = new ArrayList<>();
 
+
     public void updateRecipientName(String name) {
         this.recipientName = name;
     }
 
     public void updateCustomer(User user) {
         this.customer = user;
+    }
+
+    public void updateStatus(OrderStatus orderStatus) {
+        this.status = orderStatus;
     }
 }

@@ -5,18 +5,21 @@ import com.mink.freshexpress.common.exception.constant.CommonErrorCode;
 import com.mink.freshexpress.common.exception.constant.OrderErrorCode;
 import com.mink.freshexpress.common.exception.constant.StockErrorCode;
 import com.mink.freshexpress.common.exception.constant.WarehouseErrorCode;
+import com.mink.freshexpress.order.constant.OrderStatus;
 import com.mink.freshexpress.order.dto.CreateOrderItemRequestDto;
 import com.mink.freshexpress.order.dto.CreateOrderRequestDto;
 import com.mink.freshexpress.order.dto.OrderResponseDto;
 import com.mink.freshexpress.order.model.Order;
 import com.mink.freshexpress.order.model.OrderItem;
-import com.mink.freshexpress.order.model.StockReservation;
 import com.mink.freshexpress.order.repository.OrderItemRepository;
 import com.mink.freshexpress.order.repository.OrderRepository;
 import com.mink.freshexpress.order.service.OrderService;
 import com.mink.freshexpress.product.model.Product;
+import com.mink.freshexpress.stock.constant.StockHistoryType;
 import com.mink.freshexpress.stock.dto.CreateStockReservationDto;
 import com.mink.freshexpress.stock.model.Stock;
+import com.mink.freshexpress.stock.model.StockHistory;
+import com.mink.freshexpress.stock.repository.StockHistoryRepository;
 import com.mink.freshexpress.user.model.User;
 import com.mink.freshexpress.user.repository.UserRepository;
 import com.mink.freshexpress.warehouse.model.Warehouse;
@@ -29,7 +32,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final WarehouseRepository warehouseRepository;
+    private final StockHistoryRepository stockHistoryRepository;
 
     @Transactional
     @Override
@@ -98,6 +102,45 @@ public class OrderServiceImpl implements OrderService {
         );
 
     }
+
+    @Transactional
+    @Override
+    public void setShipped(String email, Long id) {
+        //valid
+        User warehouseManager = valid(userRepository.findByEmail(email), CommonErrorCode.INTERNAL_SERVER_ERROR);
+        Order order = valid(orderRepository.findById(id), OrderErrorCode.NOT_FOUND);
+
+        if (order.getStatus() == OrderStatus.PENDING) {
+            throw new CustomException(OrderErrorCode.NOT_FOUND_RESERVATION);
+        } else if (order.getStatus() != OrderStatus.PREPARING) {
+            throw new CustomException(OrderErrorCode.ALREADY_SHIPPED);
+        }
+
+        //order status 변경
+        order.updateStatus(OrderStatus.SHIPPED);
+
+
+        //stock history 생성
+        List<StockHistory> stockHistoryList = new ArrayList<>();
+        List<OrderItem> orderItemList = order.getOrderItemList();
+        for (OrderItem orderItem : orderItemList) {
+            Stock stock = orderItem.getStock();
+
+            StockHistory stockHistory = StockHistory.builder()
+                    .type(StockHistoryType.RELEASE)
+                    .quantity(orderItem.getQuantity())
+                    .actor(warehouseManager)
+                    .order(order)
+                    .stock(stock)
+                    .build();
+
+            stockHistoryList.add(stockHistory);
+        }
+        stockHistoryRepository.saveAll(stockHistoryList);
+
+
+    }
+
 
     private static void validOrderItemWithStock(CreateOrderItemRequestDto orderItemRequestDto, Stock stock) {
         if (stock == null) {
