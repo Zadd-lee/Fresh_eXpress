@@ -6,6 +6,7 @@ import com.mink.freshexpress.common.exception.constant.OrderErrorCode;
 import com.mink.freshexpress.common.exception.constant.StockErrorCode;
 import com.mink.freshexpress.common.exception.constant.WarehouseErrorCode;
 import com.mink.freshexpress.order.constant.OrderStatus;
+import com.mink.freshexpress.order.constant.ReservationStatus;
 import com.mink.freshexpress.order.dto.CreateOrderItemRequestDto;
 import com.mink.freshexpress.order.dto.CreateOrderRequestDto;
 import com.mink.freshexpress.order.dto.OrderResponseDto;
@@ -110,6 +111,7 @@ public class OrderServiceImpl implements OrderService {
         User warehouseManager = valid(userRepository.findByEmail(email), CommonErrorCode.INTERNAL_SERVER_ERROR);
         Order order = valid(orderRepository.findById(id), OrderErrorCode.NOT_FOUND);
 
+
         if (order.getStatus() == OrderStatus.PENDING) {
             throw new CustomException(OrderErrorCode.NOT_FOUND_RESERVATION);
         } else if (order.getStatus() != OrderStatus.PREPARING) {
@@ -119,6 +121,9 @@ public class OrderServiceImpl implements OrderService {
         //order status 변경
         order.updateStatus(OrderStatus.SHIPPED);
 
+        //stock reservation 변경
+        order.getStockReservationList()
+                .forEach(stockReservation -> stockReservation.updateStatus(ReservationStatus.CONFIRMED));
 
         //stock history 생성
         List<StockHistory> stockHistoryList = new ArrayList<>();
