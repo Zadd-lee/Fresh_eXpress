@@ -11,4 +11,6 @@ public interface OrderService {
     List<CreateStockReservationDto> create(String username, @Valid CreateOrderRequestDto dto);
 
     OrderResponseDto findById(Long id);
+
+    void setShipped(String email, Long id);
 }

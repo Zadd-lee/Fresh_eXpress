@@ -37,4 +37,11 @@ public class OrderController {
 
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> setShipped(@AuthenticationPrincipal UserDetails authenticatedPrincipal,
+                                           @PathVariable Long id) {
+        orderService.setShipped(authenticatedPrincipal.getUsername(),id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
 }
