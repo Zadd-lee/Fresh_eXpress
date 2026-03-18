@@ -2,6 +2,7 @@ package com.mink.freshexpress.user.model;
 
 import com.mink.freshexpress.auth.constant.Role;
 import com.mink.freshexpress.common.model.BaseEntity;
+import com.mink.freshexpress.delivery.model.Delivery;
 import com.mink.freshexpress.order.model.Order;
 import com.mink.freshexpress.user.controller.UpdateUserRequestDto;
 import jakarta.persistence.*;
@@ -40,6 +41,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "customer")
     private List<Order> orderList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "driver")
+    private List<Delivery> deliveryList = new ArrayList<>();
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
