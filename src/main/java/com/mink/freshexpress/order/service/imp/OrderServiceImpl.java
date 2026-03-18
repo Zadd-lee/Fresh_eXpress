@@ -75,6 +75,8 @@ public class OrderServiceImpl implements OrderService {
 
             OrderItem orderItem = OrderItem.builder()
                     .order(order)
+                    .stock(stock)
+                    .product(stock.getProduct())
                     .quantity(BigDecimal.valueOf(orderItemRequestDto.getQuantity()))
                     .unit(product.getUnit())
                     .build();

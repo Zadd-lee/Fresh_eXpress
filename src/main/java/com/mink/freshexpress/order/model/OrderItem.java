@@ -3,6 +3,7 @@ package com.mink.freshexpress.order.model;
 import com.mink.freshexpress.common.model.BaseEntity;
 import com.mink.freshexpress.product.constant.Unit;
 import com.mink.freshexpress.product.model.Product;
+import com.mink.freshexpress.stock.model.Stock;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,10 @@ public class OrderItem extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "stock_id")
+    private Stock stock;
 
 
 }
