@@ -50,6 +50,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    //scheduler - quartz
+    implementation("org.springframework.boot:spring-boot-starter-quartz:4.1.0-M2")
+    // batch
+    implementation("org.springframework.boot:spring-boot-starter-batch:4.1.0-M2")
 }
 
 tasks.named('test') {
