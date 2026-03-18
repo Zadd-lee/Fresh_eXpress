@@ -2,10 +2,12 @@ package com.mink.freshexpress.order.service.imp;
 
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.CommonErrorCode;
+import com.mink.freshexpress.common.exception.constant.OrderErrorCode;
 import com.mink.freshexpress.common.exception.constant.StockErrorCode;
 import com.mink.freshexpress.common.exception.constant.WarehouseErrorCode;
 import com.mink.freshexpress.order.dto.CreateOrderItemRequestDto;
 import com.mink.freshexpress.order.dto.CreateOrderRequestDto;
+import com.mink.freshexpress.order.dto.OrderResponseDto;
 import com.mink.freshexpress.order.model.Order;
 import com.mink.freshexpress.order.model.OrderItem;
 import com.mink.freshexpress.order.model.StockReservation;
@@ -27,6 +29,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -84,6 +87,14 @@ public class OrderServiceImpl implements OrderService {
 
 
         return stockReservationDtoList;
+    }
+
+    @Override
+    public OrderResponseDto findById(Long id) {
+        return new OrderResponseDto(
+                valid(orderRepository.findById(id), OrderErrorCode.NOT_FOUND)
+        );
+
     }
 
     private static void validOrderItemWithStock(CreateOrderItemRequestDto orderItemRequestDto, Stock stock) {

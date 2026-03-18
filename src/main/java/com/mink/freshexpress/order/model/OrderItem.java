@@ -23,6 +23,7 @@ public class OrderItem extends BaseEntity {
 
     @Column(nullable = false)
     private BigDecimal quantity;
+
     @Column(nullable = false)
     private Unit unit;
 
