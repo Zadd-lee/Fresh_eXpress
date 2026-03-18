@@ -44,4 +44,12 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal UserDetails authenticatedPrincipal,
+                                           @PathVariable Long id) {
+        orderService.delete(authenticatedPrincipal.getUsername(), id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
+    }
+
 }

@@ -13,4 +13,6 @@ public interface OrderService {
     OrderResponseDto findById(Long id);
 
     void setShipped(String email, Long id);
+
+    void delete(String email, Long id);
 }
