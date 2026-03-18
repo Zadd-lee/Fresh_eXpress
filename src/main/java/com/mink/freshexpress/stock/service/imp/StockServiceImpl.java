@@ -2,6 +2,7 @@ package com.mink.freshexpress.stock.service.imp;
 
 import com.mink.freshexpress.common.exception.CustomException;
 import com.mink.freshexpress.common.exception.constant.*;
+import com.mink.freshexpress.order.constant.OrderStatus;
 import com.mink.freshexpress.order.model.OrderItem;
 import com.mink.freshexpress.order.model.StockReservation;
 import com.mink.freshexpress.order.repository.OrderItemRepository;
@@ -148,6 +149,9 @@ public class StockServiceImpl implements StockService {
     @Override
     public void createReservation(List<CreateStockReservationDto> dtoList) {
         List<StockReservation> stockReservationList = new ArrayList<>();
+
+        updateOrderStatus(dtoList);
+
         for (CreateStockReservationDto dto : dtoList) {
             //valid
             OrderItem orderItem = valid(orderItemRepository.findById(dto.getOrderItemId()), CommonErrorCode.INTERNAL_SERVER_ERROR);
@@ -167,6 +171,12 @@ public class StockServiceImpl implements StockService {
         }
         stockReservationRepository.saveAll(stockReservationList);
 
+    }
+
+    private void updateOrderStatus(List<CreateStockReservationDto> dtoList) {
+        Long orderItemId = dtoList.get(0).getOrderItemId();
+        OrderItem orderItem = valid(orderItemRepository.findById(orderItemId), CommonErrorCode.INTERNAL_SERVER_ERROR);
+        orderItem.getOrder().updateStatus(OrderStatus.PREPARING);
     }
 
     private Product getProduct(CreateStockRequestDto dto, Map<Long, Product> productMap) {
