@@ -12,6 +12,7 @@ import com.mink.freshexpress.order.dto.CreateOrderRequestDto;
 import com.mink.freshexpress.order.dto.OrderResponseDto;
 import com.mink.freshexpress.order.model.Order;
 import com.mink.freshexpress.order.model.OrderItem;
+import com.mink.freshexpress.order.model.StockReservation;
 import com.mink.freshexpress.order.repository.OrderItemRepository;
 import com.mink.freshexpress.order.repository.OrderRepository;
 import com.mink.freshexpress.order.service.OrderService;
@@ -21,6 +22,7 @@ import com.mink.freshexpress.stock.dto.CreateStockReservationDto;
 import com.mink.freshexpress.stock.model.Stock;
 import com.mink.freshexpress.stock.model.StockHistory;
 import com.mink.freshexpress.stock.repository.StockHistoryRepository;
+import com.mink.freshexpress.stock.repository.StockReservationRepository;
 import com.mink.freshexpress.user.model.User;
 import com.mink.freshexpress.user.repository.UserRepository;
 import com.mink.freshexpress.warehouse.model.Warehouse;
@@ -30,10 +32,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -47,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final WarehouseRepository warehouseRepository;
     private final StockHistoryRepository stockHistoryRepository;
+    private final StockReservationRepository stockReservationRepository;
 
     @Transactional
     @Override
@@ -144,6 +144,52 @@ public class OrderServiceImpl implements OrderService {
         stockHistoryRepository.saveAll(stockHistoryList);
 
 
+    }
+
+    @Transactional
+    @Override
+    public void delete(String email, Long id) {
+        //valid
+        Order order = valid(orderRepository.findById(id), OrderErrorCode.NOT_FOUND);
+        User user = valid(userRepository.findByEmail(email), CommonErrorCode.INTERNAL_SERVER_ERROR);
+
+
+        if (order.getStatus() == OrderStatus.PENDING || order.getStatus() == OrderStatus.PREPARING) {
+            // 상태 변경
+            order.updateStatus(OrderStatus.CANCELLED);
+
+            //예약 취소
+            List<StockHistory> stockHistoryList = new ArrayList<>();
+
+
+            List<StockReservation> stockReservationList = stockReservationRepository.findByOrder(order);
+            for (StockReservation stockReservation : stockReservationList) {
+                //예약 취소
+                stockReservation.updateStatus(ReservationStatus.RELEASED);
+
+                BigDecimal stockReservationQuantity = stockReservation.getQuantity();
+
+                //stock 복구
+
+                Stock stock = stockReservation.getStock();
+                stock.updateCurrentQuantity(stock.getCurrentQuantity()
+                        .add(stockReservationQuantity));
+
+                // history 변경
+                stockHistoryList.add(StockHistory.builder()
+                        .quantity(stockReservationQuantity)
+                        .order(order)
+                        .stock(stock)
+                        .type(StockHistoryType.RELEASE)
+                        .actor(user)
+                        .build());
+            }
+
+            stockHistoryRepository.saveAll(stockHistoryList);
+
+        } else {
+            order.updateStatus(OrderStatus.FAILED);
+        }
     }
 
 
