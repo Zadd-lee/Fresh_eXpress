@@ -28,10 +28,10 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = dto.toEntity();
 
         //상위 카테고리가 있을 경우
-        Long parentCategoryId = Long.valueOf(dto.getParentCategoryId());
-        if (parentCategoryId == null) {//최상위 카테고리일 경우
+        if (dto.getParentCategoryId() == null) {//최상위 카테고리일 경우
             category.updateDepth(0);
         } else {//상위 카테고리가 있는 경우
+            Long parentCategoryId = Long.valueOf(dto.getParentCategoryId());
             Category parentCategory = valid(repository.findById(parentCategoryId), CategoryErrorCode.PARENT_CATEGORY_NOT_FOUND);
 
             //child 에 parent 할당;
