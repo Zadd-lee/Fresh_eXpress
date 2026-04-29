@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Delivery extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
 
@@ -36,5 +36,11 @@ public class Delivery extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "driver_id")
     private User driver;
+
+    public Delivery(LocalDateTime assignedAt,Order order) {
+        this.status = DeliveryStatus.READY;
+        this.assignedAt = assignedAt;
+        this.order = order;
+    }
 
 }
