@@ -119,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         //order status 변경
-        order.updateStatus(OrderStatus.SHIPPED);
+        order.updateStatus(OrderStatus.READY_TO_SHIPPED);
 
         //stock reservation 변경
         order.getStockReservationList()
