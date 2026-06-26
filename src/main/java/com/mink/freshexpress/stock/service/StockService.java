@@ -17,4 +17,6 @@ public interface StockService {
     void discard(Long id);
 
     void createReservation(List<CreateStockReservationDto> dto);
+
+    void updateStatusToExpired();
 }

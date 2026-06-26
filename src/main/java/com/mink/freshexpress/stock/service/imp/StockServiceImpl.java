@@ -25,6 +25,7 @@ import com.mink.freshexpress.warehouse.model.WarehouseLocation;
 import com.mink.freshexpress.warehouse.repository.WarehouseLocationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -36,6 +37,7 @@ import static com.mink.freshexpress.common.util.DateFormatter.getDateTime;
 import static com.mink.freshexpress.common.util.Validator.valid;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class StockServiceImpl implements StockService {
@@ -170,6 +172,24 @@ public class StockServiceImpl implements StockService {
             stockReservationList.add(stockReservation);
         }
         stockReservationRepository.saveAll(stockReservationList);
+
+    }
+
+    @Transactional
+    @Override
+    public void updateStatusToExpired() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Stock> expiredStockList = stockRepository.findAllByExpiredAtAfter(now);
+        List<Stock> expiringSoonStokeList = stockRepository.findAllByExpiredAtAfter(now.minusDays(3));
+        log.info("유통기한 지난 재고 총 {}건 확인",expiredStockList.size());
+        log.info("유통기한 임박 재고 총 {}건 확인",expiringSoonStokeList.size());
+        log.info("상태 변경 시작");
+
+        expiredStockList.forEach(s->s.updateStatus(Status.EXPIRED));
+        expiringSoonStokeList.forEach(s->s.updateStatus(Status.EXPIRING_SOON));
+
+        log.info("상태 변경 완료");
+        log.info("총 {}건 변경 완료",expiredStockList.size()+expiringSoonStokeList.size());
 
     }
 
